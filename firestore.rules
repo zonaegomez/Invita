@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /invitations/{invitationId} {
+      // Lectura publica solo de invitaciones publicadas (pagina /i/[slug]).
+      // El documento nunca contiene editToken -- ver invitationSecrets abajo.
+      allow read: if resource.data.status == "published";
+
+      allow create: if request.resource.data.status == "published"
+                    && request.resource.data.keys().hasAll([
+                         "slug", "ownerId", "categoryId", "templateId",
+                         "hostName", "date", "time", "venueName",
+                         "venueAddress", "mapsUrl", "message", "contactPhone",
+                         "images", "status", "createdAt", "updatedAt"
+                       ])
+                    && !("editToken" in request.resource.data);
+
+      // TODO(Fase 5): sustituir por validacion de ownerId + Firebase Auth.
+      allow update, delete: if false;
+    }
+
+    match /invitationSecrets/{invitationId} {
+      // Se crea en el mismo batch atomico que la invitacion publica (ver
+      // invitationService.createAndPublishInvitation). Nunca se puede leer
+      // ni modificar desde el cliente -- solo el admin SDK (route handlers /
+      // Server Components del dashboard) lo valida, en verifyEditToken().
+      allow create: if request.resource.data.editToken is string
+                    && request.resource.data.editToken.size() > 10
+                    && request.resource.data.keys().hasOnly(["editToken"]);
+      allow read, update, delete: if false;
+    }
+
+    match /invitations/{invitationId}/guests/{guestId} {
+      // RSVP publico y abierto -- es el proposito del formulario. Se valida
+      // shape/tamano basico para mitigar spam; el rate limiting real vive en
+      // App Check / middleware (ver riesgos tecnicos), no en estas reglas.
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 80
+                    && request.resource.data.attending in ["yes", "no"]
+                    && request.resource.data.adults is int
+                    && request.resource.data.adults >= 0
+                    && request.resource.data.adults <= 20
+                    && request.resource.data.children is int
+                    && request.resource.data.children >= 0
+                    && request.resource.data.children <= 20;
+
+      allow read, update, delete: if false;
+    }
+
+    match /templates/{templateId} {
+      allow read: if true;
+      allow write: if false; // gestionado por codigo (lib/templates) en el MVP
+    }
+
+    match /eventCategories/{categoryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /aiRateLimits/{bucketId} {
+      // Contadores de limite de generaciones de IA (features/ai-design).
+      // Solo el admin SDK los toca (lib/ai/rateLimit.ts) -- bloqueado por
+      // completo desde el cliente, igual que invitationSecrets.
+      allow read, write: if false;
+    }
+  }
+}
