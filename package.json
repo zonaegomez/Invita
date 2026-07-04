@@ -21,7 +21,9 @@
     "tailwind-merge": "^2.5.2",
     "server-only": "^0.0.1",
     "qrcode": "^1.5.4",
-    "openai": "^4.68.0"
+    "openai": "^4.68.0",
+    "google-auth-library": "^9.14.1",
+    "@vercel/oidc": "^2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
