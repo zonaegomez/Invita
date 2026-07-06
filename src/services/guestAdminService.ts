@@ -12,13 +12,15 @@ import type { Guest } from "@/types/guest";
  */
 
 export async function verifyEditToken(invitationId: string, editToken: string): Promise<boolean> {
-  const snap = await getAdminDb().collection(COLLECTIONS.invitationSecrets).doc(invitationId).get();
+  const db = await getAdminDb();
+  const snap = await db.collection(COLLECTIONS.invitationSecrets).doc(invitationId).get();
   if (!snap.exists) return false;
   return snap.data()?.editToken === editToken;
 }
 
 export async function listGuests(invitationId: string): Promise<Guest[]> {
-  const snap = await getAdminDb()
+  const db = await getAdminDb();
+  const snap = await db
     .collection(COLLECTIONS.invitations)
     .doc(invitationId)
     .collection(COLLECTIONS.guests)

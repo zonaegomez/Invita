@@ -13,7 +13,7 @@ import { getAdminBucket } from "@/firebase/admin";
  * descarga que normalmente acompana esa URL.
  */
 export async function uploadAiImage(base64Png: string, invitationId: string): Promise<string> {
-  const bucket = getAdminBucket();
+  const bucket = await getAdminBucket();
   const buffer = Buffer.from(base64Png, "base64");
   const path = `invitations/${invitationId}/ai/hero-${Date.now()}.png`;
   const file = bucket.file(path);

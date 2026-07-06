@@ -12,7 +12,7 @@ import { getAdminDb } from "@/firebase/admin";
 const LIMIT_PER_HOUR = 5;
 
 export async function checkAiRateLimit(ip: string): Promise<boolean> {
-  const db = getAdminDb();
+  const db = await getAdminDb();
   const bucket = new Date().toISOString().slice(0, 13); // yyyy-mm-ddThh
   const docId = `${ip.replace(/[^a-zA-Z0-9]/g, "_")}_${bucket}`;
   const ref = db.collection("aiRateLimits").doc(docId);

@@ -29,7 +29,8 @@ export interface InvitationUpdatePayload {
  * fuera de alcance del MVP (ver mensaje en el paso de preview del wizard).
  */
 export async function updateInvitationAdmin(id: string, payload: InvitationUpdatePayload): Promise<void> {
-  await getAdminDb()
+  const db = await getAdminDb();
+  await db
     .collection(COLLECTIONS.invitations)
     .doc(id)
     .update({ ...payload, updatedAt: Timestamp.now() });

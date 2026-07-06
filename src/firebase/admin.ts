@@ -1,15 +1,10 @@
 import "server-only";
-import {
-  applicationDefault,
-  cert,
-  getApps,
-  initializeApp,
-  type App,
-  type Credential,
-} from "firebase-admin/app";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { applicationDefault, cert, getApps, initializeApp, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
-import { ExternalAccountClient } from "google-auth-library";
 import { getVercelOidcToken } from "@vercel/oidc";
 
 /**
@@ -17,12 +12,12 @@ import { getVercelOidcToken } from "@vercel/oidc";
  * route handlers (app/api) o Server Components de solo lectura confiable,
  * nunca desde un componente cliente ni desde services/ que se usen en el navegador.
  *
- * La inicializacion es perezosa (lazy): Next.js ejecuta un paso de "collecting
- * page data" en build time que importa cada route handler para inspeccionar
- * sus exports, sin invocarlos. Si cert() corriera a nivel de modulo, el
- * build fallaria en cuanto las credenciales no estuvieran disponibles (por
- * ejemplo en CI con variables dummy). Por eso getAdminDb() solo construye la
- * app la primera vez que una funcion realmente la necesita.
+ * La inicializacion es perezosa (lazy) y asíncrona: Next.js ejecuta un paso de
+ * "collecting page data" en build time que importa cada route handler para
+ * inspeccionar sus exports, sin invocarlos. Si cert() corriera a nivel de
+ * modulo, el build fallaria en cuanto las credenciales no estuvieran
+ * disponibles (por ejemplo en CI con variables dummy). Por eso getAdminDb()
+ * solo construye la app la primera vez que una funcion realmente la necesita.
  *
  * Credenciales: soporta tres modos, elegidos automaticamente segun lo que
  * haya en el entorno.
@@ -30,64 +25,58 @@ import { getVercelOidcToken } from "@vercel/oidc";
  *      generar una clave de service account.
  *   2. Workload Identity Federation (GCP_WORKLOAD_IDENTITY_*) -- usado en
  *      Vercel, donde no se puede generar una clave de service account (la
- *      politica de la organizacion bloquea `disableServiceAccountKeyCreation`)
- *      pero Vercel expone un token OIDC firmado por función/deploy que GCP
- *      puede canjear por credenciales de corta duración sin ningún secreto
- *      descargable -- ver GUIA-DEPLOY.md, sección "Autenticación sin clave".
+ *      politica de la organizacion bloquea `disableServiceAccountKeyCreation`).
+ *      IMPORTANTE: Firestore usa gRPC internamente y firebase-admin solo
+ *      acepta credenciales creadas por cert() o applicationDefault() para
+ *      construir el canal gRPC -- un objeto Credential "a mano" (con solo
+ *      getAccessToken()) es suficiente para Storage/Auth (REST) pero
+ *      Firestore lo rechaza con "Must initialize the SDK with a certificate
+ *      credential or application default credentials". Por eso, en vez de
+ *      envolver el cliente de Workload Identity en un Credential custom,
+ *      escribimos un archivo de configuracion "external_account" estandar
+ *      (con el token OIDC de Vercel ya canjeado, vía credential_source de
+ *      tipo file) y apuntamos GOOGLE_APPLICATION_CREDENTIALS a el ANTES de
+ *      llamar a applicationDefault() -- así el SDK de Google Auth construye
+ *      el mismo tipo de cliente que usa para ADC real, compatible con gRPC.
  *   3. Application Default Credentials (ADC) -- fallback para desarrollo
  *      local: `gcloud auth application-default login` deja credenciales en
  *      el disco del desarrollador que el SDK detecta solas.
  */
-let cachedApp: App | null = null;
+let cachedApp: App | Promise<App> | null = null;
 
 /**
- * Construye una Credential de firebase-admin respaldada por Workload Identity
- * Federation: intercambia el token OIDC que Vercel firma para cada
- * invocación (getVercelOidcToken) por un access token de Google mediante STS,
- * impersonando a la service account de Firebase Admin. No requiere ningún
- * archivo ni variable secreta -- todos los valores de entorno involucrados
- * son identificadores públicos (número de proyecto, IDs de pool/proveedor,
- * correo de la service account).
+ * Escribe en /tmp (el único directorio con permiso de escritura en una
+ * función serverless de Vercel) un archivo de credenciales tipo
+ * "external_account" que apunta, vía credential_source.file, al token OIDC
+ * que Vercel firma para esta invocación. Devuelve la ruta del archivo de
+ * configuración para asignarla a GOOGLE_APPLICATION_CREDENTIALS.
  */
-function buildWorkloadIdentityCredential(): Credential {
+async function writeWorkloadIdentityCredentialFile(): Promise<string> {
   const projectNumber = process.env.GCP_PROJECT_NUMBER;
   const poolId = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID;
   const providerId = process.env.GCP_WORKLOAD_IDENTITY_PROVIDER_ID;
   const serviceAccountEmail = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
 
-  const authClient = ExternalAccountClient.fromJSON({
+  const oidcToken = await getVercelOidcToken();
+  const dir = mkdtempSync(join(tmpdir(), "wif-"));
+  const tokenPath = join(dir, "vercel-oidc-token");
+  writeFileSync(tokenPath, oidcToken, { mode: 0o600 });
+
+  const credentialConfig = {
     type: "external_account",
     audience: `//iam.googleapis.com/projects/${projectNumber}/locations/global/workloadIdentityPools/${poolId}/providers/${providerId}`,
     subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
     token_url: "https://sts.googleapis.com/v1/token",
     service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${serviceAccountEmail}:generateAccessToken`,
-    subject_token_supplier: {
-      getSubjectToken: getVercelOidcToken,
-    },
-  });
-
-  if (!authClient) {
-    throw new Error("No se pudo construir el cliente de Workload Identity Federation.");
-  }
-
-  return {
-    async getAccessToken() {
-      const response = await authClient.getAccessToken();
-      const token = typeof response === "string" ? response : response?.token;
-      if (!token) {
-        throw new Error("Workload Identity Federation no devolvió un access token válido.");
-      }
-      return { access_token: token, expires_in: 3600 };
-    },
+    credential_source: { file: tokenPath },
   };
+  const configPath = join(dir, "wif-credentials.json");
+  writeFileSync(configPath, JSON.stringify(credentialConfig), { mode: 0o600 });
+  return configPath;
 }
 
-function getAdminApp(): App {
-  if (cachedApp) return cachedApp;
-  if (getApps().length) {
-    cachedApp = getApps()[0]!;
-    return cachedApp;
-  }
+async function buildAdminApp(): Promise<App> {
+  if (getApps().length) return getApps()[0]!;
 
   const hasExplicitCert =
     process.env.FIREBASE_ADMIN_PROJECT_ID &&
@@ -108,20 +97,30 @@ function getAdminApp(): App {
       privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n"),
     });
   } else if (hasWorkloadIdentity) {
-    credential = buildWorkloadIdentityCredential();
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = await writeWorkloadIdentityCredentialFile();
+    credential = applicationDefault();
   } else {
     credential = applicationDefault();
   }
 
-  cachedApp = initializeApp({
+  return initializeApp({
     credential,
     projectId: process.env.FIREBASE_ADMIN_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   });
-  return cachedApp;
 }
 
-export function getAdminDb(): Firestore {
-  return getFirestore(getAdminApp());
+function getAdminApp(): Promise<App> {
+  if (!cachedApp) {
+    cachedApp = buildAdminApp().catch((err) => {
+      cachedApp = null; // permitir reintentar si la construcción falló
+      throw err;
+    });
+  }
+  return Promise.resolve(cachedApp);
+}
+
+export async function getAdminDb(): Promise<Firestore> {
+  return getFirestore(await getAdminApp());
 }
 
 /**
@@ -131,6 +130,6 @@ export function getAdminDb(): Firestore {
  * del bucket viene de la misma variable pública que usa el cliente, para
  * garantizar que ambos apuntan exactamente al mismo bucket.
  */
-export function getAdminBucket() {
-  return getStorage(getAdminApp()).bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+export async function getAdminBucket() {
+  return getStorage(await getAdminApp()).bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
 }
