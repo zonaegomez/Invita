@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getOpenAI } from "@/lib/ai/openai";
 import { checkAiRateLimit } from "@/lib/ai/rateLimit";
 import { uploadAiImage } from "@/lib/ai/uploadAiImage";
@@ -70,8 +70,11 @@ export async function POST(request: NextRequest) {
     const b64 = image.data?.[0]?.b64_json;
     if (b64) {
       heroImageUrl = await uploadAiImage(b64, crypto.randomUUID());
+    } else {
+      console.error("openai.images.generate no devolvio b64_json:", JSON.stringify(image).slice(0, 500));
     }
-  } catch {
+  } catch (err) {
+    console.error("Fallo al generar o subir la imagen de IA:", err);
     heroImageUrl = undefined;
   }
 
