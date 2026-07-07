@@ -8,25 +8,34 @@ const STORAGE_KEY = "invitacion-wizard-draft";
 
 export interface WizardDraft {
   /** Generado al iniciar el wizard; se usa como ID del documento de
-   * Firestore Y como prefijo de las rutas de Storage, para que las imágenes
-   * subidas durante el wizard ya apunten al ID final de la invitación. */
+   * Firestore Y como prefijo de las rutas de Storage, para que las imagenes
+   * subidas durante el wizard ya apunten al ID final de la invitacion. */
   id: string;
   categoryId?: EventCategoryId;
   templateId?: string;
-  /** Presente solo si el usuario generó el diseño con IA (features/ai-design). */
+  /** Presente solo si el usuario genero el diseno con IA (features/ai-design). */
   customTheme?: ThemeConfig;
+  /**
+   * true si el usuario subio su propia imagen principal (hecha afuera de la
+   * app, ej. con otra IA) y esa imagen ya trae el texto del evento dibujado
+   * dentro. En ese caso el Hero no debe superponer nombre/edad/tema en HTML
+   * encima -- se verian duplicados. Ver app/crear/multimedia/page.tsx (donde
+   * se marca) y app/crear/preview/page.tsx (donde se aplica, forzando
+   * sectionVariants.hero a "poster" en el theme que se publica).
+   */
+  heroTextBaked?: boolean;
 
-  // Campos comunes / categoría "infantil"
+  // Campos comunes / categoria "infantil"
   hostName?: string;
   age?: number;
   theme?: string;
 
-  // Campos específicos de categoría "boda" (ver CategoryFields en types/invitation.ts)
+  // Campos especificos de categoria "boda" (ver CategoryFields en types/invitation.ts)
   brideAndGroom?: [string, string];
   dressCode?: string;
   giftRegistryUrl?: string;
 
-  // Comunes a cualquier categoría
+  // Comunes a cualquier categoria
   date?: string; // YYYY-MM-DD, del <input type="date">
   time?: string; // HH:mm
   venueName?: string;

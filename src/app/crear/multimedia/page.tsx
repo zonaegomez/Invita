@@ -95,6 +95,20 @@ export default function MultimediaStepPage() {
           uploading={uploading === "hero"}
           onChange={(e) => handleImageUpload("hero", e)}
         />
+        {draft.images?.hero && (
+          <label className="-mt-3 flex items-start gap-2 text-sm text-neutral-600">
+            <input
+              type="checkbox"
+              className="mt-0.5"
+              checked={draft.heroTextBaked ?? false}
+              onChange={(e) => updateDraft({ heroTextBaked: e.target.checked })}
+            />
+            <span>
+              Mi imagen principal ya incluye el texto (título, nombre, edad) dibujado dentro —
+              no lo pongas de nuevo encima.
+            </span>
+          </label>
+        )}
         <UploadField
           label="Imagen de portada"
           currentUrl={draft.images?.cover}

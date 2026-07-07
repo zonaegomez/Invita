@@ -24,7 +24,17 @@ export default function PreviewStepPage() {
 
   // customTheme tiene prioridad: es el ThemeConfig que arma features/ai-design
   // cuando el usuario genero el diseno con IA (ver app/crear/plantilla/ia).
-  const theme = draft.customTheme ?? (draft.templateId ? getTemplate(draft.templateId) : undefined);
+  const baseTheme = draft.customTheme ?? (draft.templateId ? getTemplate(draft.templateId) : undefined);
+  // Si el usuario marco "mi imagen ya incluye el texto" en el paso de
+  // multimedia (heroTextBaked), forzamos el Hero a variante "poster" -- solo
+  // muestra la imagen, sin superponer nombre/edad/tema en HTML encima, que
+  // se veria duplicado. Clonamos en vez de mutar baseTheme porque, cuando
+  // viene de una plantilla del registry (no de IA), ese objeto es compartido
+  // por todas las invitaciones que usan esa plantilla.
+  const theme =
+    draft.heroTextBaked && baseTheme
+      ? { ...baseTheme, sectionVariants: { ...baseTheme.sectionVariants, hero: "poster" as const } }
+      : baseTheme;
 
   const viewModel: InvitationViewModel | null = useMemo(() => {
     if (!draft.date || !draft.time || !draft.hostName) return null;
@@ -73,7 +83,11 @@ export default function PreviewStepPage() {
       const input: CreateInvitationInput = {
         categoryId: draft.categoryId,
         templateId: theme.id,
-        customTheme: draft.customTheme,
+        // Si heroTextBaked forzo el override arriba, publicamos ESE theme (ya
+        // con hero:"poster") en vez del customTheme original -- asi la
+        // pagina publica (que lee invitation.customTheme del documento, no
+        // el draft) tambien respeta la eleccion del usuario.
+        customTheme: draft.heroTextBaked ? theme : draft.customTheme,
         hostName: viewModel.hostName,
         age: viewModel.age,
         theme: viewModel.theme,
