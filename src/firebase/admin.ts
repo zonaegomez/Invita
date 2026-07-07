@@ -114,14 +114,32 @@ function getProjectId(): string | undefined {
   return process.env.FIREBASE_ADMIN_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 }
 
+// Ambos modos deben ignorar propiedades `undefined` en los payloads que se
+// escriben, igual que el cliente (ver firebase/client.ts) -- si no, cualquier
+// campo opcional ausente (age/theme en categoria "boda", music sin definir)
+// hace que Firestore lance "Cannot use 'undefined' as a Firestore value" de
+// forma sincrona, y updateInvitationAdmin() nunca llega a escribir nada. Este
+// fue el bug detras de "no guarda cambios" al editar una invitacion publicada
+// desde dashboard/[id]/editar.
+let adminFirestoreSettingsApplied = false;
+
 export async function getAdminDb(): Promise<Firestore> {
   if (hasWorkloadIdentityConfig()) {
     if (!cachedWifDb) {
-      cachedWifDb = new Firestore({ projectId: getProjectId(), authClient: getWifAuthClient() });
+      cachedWifDb = new Firestore({
+        projectId: getProjectId(),
+        authClient: getWifAuthClient(),
+        ignoreUndefinedProperties: true,
+      });
     }
     return cachedWifDb;
   }
-  return getFirebaseAdminFirestore(getAdminApp());
+  const db = getFirebaseAdminFirestore(getAdminApp());
+  if (!adminFirestoreSettingsApplied) {
+    db.settings({ ignoreUndefinedProperties: true });
+    adminFirestoreSettingsApplied = true;
+  }
+  return db;
 }
 
 /**
