@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>¡Marbet Anahí cumple 8 años! 🎤✨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #E11D74;
+    --purple: #7C3AED;
+    --yellow: #FACC15;
+    --bg: #FFF7FB;
+    --ink: #2B1331;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Baloo 2', sans-serif;
+  }
+  a { color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.5rem, 2vw, 1.5rem);
+    padding: 0.9rem 1rem;
+    background: rgba(255,247,251,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(225,29,116,0.12);
+  }
+  nav a {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--purple);
+    text-decoration: none;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  nav a:hover { background: var(--purple); color: white; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 7.5rem 1.5rem 3rem;
+    background: radial-gradient(circle at 20% 20%, #ffd9ec 0%, transparent 45%),
+                radial-gradient(circle at 80% 15%, #e6d6ff 0%, transparent 40%),
+                linear-gradient(160deg, var(--pink) 0%, var(--purple) 100%);
+    overflow: hidden;
+    color: white;
+  }
+  .sparkle {
+    position: absolute;
+    color: var(--yellow);
+    font-size: 1.4rem;
+    animation: float 5s ease-in-out infinite;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-22px) rotate(15deg); }
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: spin-in 0.8s ease-out;
+  }
+  @keyframes spin-in {
+    from { opacity: 0; transform: scale(0.7) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 8vw, 4.6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    text-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    margin-bottom: 0.6rem;
+  }
+  .hero .age-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15em;
+    height: 1.15em;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: var(--ink);
+    font-size: 0.7em;
+    vertical-align: middle;
+    margin: 0 0.1em;
+  }
+  .hero p.subtitle {
+    font-size: clamp(1.05rem, 3vw, 1.35rem);
+    font-weight: 500;
+    opacity: 0.95;
+    margin-bottom: 2.2rem;
+  }
+  .mic-emoji { display: inline-block; animation: float 4s ease-in-out infinite; }
+
+  /* countdown */
+  .countdown {
+    display: flex;
+    gap: clamp(0.5rem, 2vw, 1.1rem);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2.4rem;
+  }
+  .countdown .unit {
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 18px;
+    padding: 0.9rem 1rem;
+    min-width: 74px;
+    backdrop-filter: blur(6px);
+  }
+  .countdown .num {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(1.6rem, 5vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .countdown .label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+    margin-top: 0.2rem;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--yellow);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.95rem 2.1rem;
+    border-radius: 999px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(250,204,21,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    animation: pulse-glow 2.4s ease-in-out infinite;
+  }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(250,204,21,0.45); }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 10px 30px rgba(250,204,21,0.35); }
+    50% { box-shadow: 0 10px 42px rgba(250,204,21,0.65); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.6rem;
+    animation: bounce 2s infinite;
+    opacity: 0.85;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, 10px); }
+  }
+
+  /* ---------- STAGE LIGHTS (fondo tipo concierto, sin usar personajes con copyright) ---------- */
+  .stage-lights {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .beam {
+    position: absolute;
+    top: -10%;
+    width: 140px;
+    height: 130%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 70%);
+    transform-origin: top center;
+    filter: blur(2px);
+    animation: sweep 6s ease-in-out infinite;
+    mix-blend-mode: screen;
+  }
+  .beam.b1 { left: 8%;  background: linear-gradient(180deg, rgba(250,204,21,0.32) 0%, rgba(250,204,21,0) 70%); animation-delay: 0s; }
+  .beam.b2 { left: 30%; background: linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0) 70%); animation-delay: 1.2s; }
+  .beam.b3 { left: 55%; background: linear-gradient(180deg, rgba(124,58,237,0.30) 0%, rgba(124,58,237,0) 70%); animation-delay: 2.4s; }
+  .beam.b4 { left: 78%; background: linear-gradient(180deg, rgba(250,204,21,0.28) 0%, rgba(250,204,21,0) 70%); animation-delay: 0.8s; }
+  @keyframes sweep {
+    0%, 100% { transform: rotate(-18deg); opacity: 0.55; }
+    50% { transform: rotate(18deg); opacity: 1; }
+  }
+  .stage-silhouette {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 22%;
+    z-index: 0;
+    background: linear-gradient(180deg, rgba(43,19,49,0) 0%, rgba(43,19,49,0.55) 100%);
+    pointer-events: none;
+  }
+  .hero > *:not(.stage-lights):not(.stage-silhouette) { position: relative; z-index: 1; }
+
+  /* ---------- MARQUEE (letrero tipo concierto) ---------- */
+  .marquee-bar {
+    position: fixed;
+    top: 52px;
+    left: 0; right: 0;
+    z-index: 40;
+    background: var(--ink);
+    color: var(--yellow);
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0.4rem 0;
+  }
+  .marquee-track {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 16s linear infinite;
+  }
+  .marquee-track span { margin: 0 1.4rem; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* ---------- GALERIA ---------- */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  .photo-card {
+    aspect-ratio: 1 / 1;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #fde3f1, #ece0ff);
+    border: 2px dashed rgba(124,58,237,0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    color: var(--purple);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.8rem;
+    overflow: hidden;
+  }
+  .photo-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+  .photo-card .placeholder-icon { font-size: 1.8rem; }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 4.5rem 1.5rem; max-width: 960px; margin: 0 auto; scroll-margin-top: 92px; }
+  .section-title {
+    text-align: center;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 0.6rem;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: #6b5a75;
+    font-size: 0.95rem;
+    margin-bottom: 2.6rem;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.4rem;
+  }
+  .card {
+    background: var(--white);
+    border-radius: 22px;
+    padding: 1.8rem 1.6rem;
+    box-shadow: 0 12px 30px rgba(124,58,237,0.08);
+    border: 1px solid rgba(124,58,237,0.08);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 18px 38px rgba(124,58,237,0.16); }
+  .card .icon {
+    width: 52px; height: 52px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: white;
+    margin-bottom: 1rem;
+  }
+  .card h3 { font-size: 1.1rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .card p { font-size: 0.92rem; color: #59495f; line-height: 1.5; }
+  .card .link-btn {
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--pink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--pink);
+    padding-bottom: 1px;
+  }
+
+  /* itinerary */
+  .timeline { position: relative; padding-left: 2.2rem; }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 9px; top: 6px; bottom: 6px;
+    width: 3px;
+    background: linear-gradient(var(--pink), var(--purple));
+    border-radius: 3px;
+  }
+  .timeline-item { position: relative; margin-bottom: 1.8rem; }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -2.2rem;
+    top: 4px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 4px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--purple);
+  }
+  .timeline-item .time { font-weight: 700; color: var(--purple); font-size: 0.95rem; }
+  .timeline-item .desc { color: #59495f; font-size: 0.92rem; margin-top: 0.15rem; }
+  .note-box {
+    margin-top: 2.2rem;
+    background: linear-gradient(135deg, #fff1f8, #f3ebff);
+    border: 1.5px dashed var(--pink);
+    border-radius: 18px;
+    padding: 1.2rem 1.4rem;
+    font-size: 0.92rem;
+    color: var(--ink);
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+
+  /* message */
+  .message-section { text-align: center; }
+  .message-quote {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(1.3rem, 4vw, 1.9rem);
+    color: var(--purple);
+    line-height: 1.4;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .message-quote::before { content: "\201C"; }
+  .message-quote::after { content: "\201D"; }
+
+  /* RSVP */
+  .rsvp-wrap {
+    background: var(--white);
+    border-radius: 28px;
+    padding: clamp(1.6rem, 5vw, 3rem);
+    box-shadow: 0 20px 50px rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.08);
+  }
+  .form-grid { display: grid; gap: 1.1rem; margin-top: 1.6rem; }
+  label.field-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    border: 1.5px solid #ecdcf0;
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #fffdfe;
+    transition: border 0.2s, box-shadow 0.2s;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--purple);
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.12);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+
+  .attend-toggle { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .attend-toggle button {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border: 1.5px solid #ecdcf0;
+    background: #fffdfe;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+    transition: all 0.2s;
+  }
+  .attend-toggle button.active-yes { background: var(--pink); border-color: var(--pink); color: white; }
+  .attend-toggle button.active-no { background: #59495f; border-color: #59495f; color: white; }
+
+  .counters { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .counter-box {
+    border: 1.5px solid #ecdcf0;
+    border-radius: 14px;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .counter-box .stepper { display: flex; align-items: center; gap: 0.6rem; }
+  .counter-box button {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: #f3ebff;
+    color: var(--purple);
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .counter-box button:hover { background: var(--purple); color: white; }
+  .counter-box .count-val { font-weight: 700; min-width: 20px; text-align: center; }
+
+  .submit-btn {
+    width: 100%;
+    margin-top: 0.6rem;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 1rem;
+    border-radius: 999px;
+    border: none;
+    box-shadow: 0 14px 30px rgba(225,29,116,0.28);
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .submit-btn:hover { transform: translateY(-2px); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .form-msg { font-size: 0.85rem; margin-top: 0.9rem; text-align: center; }
+  .form-msg.error { color: #C0265A; }
+  .form-msg.success { color: #1C8A4B; font-weight: 600; }
+
+  .success-panel { text-align: center; padding: 1.5rem 0.5rem 0.5rem; }
+  .success-panel .big-emoji { font-size: 3rem; animation: pop 0.5s ease; }
+  @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+  footer {
+    text-align: center;
+    padding: 2.5rem 1.5rem 3rem;
+    color: #8a768f;
+    font-size: 0.85rem;
+  }
+  footer .heart { color: var(--pink); }
+
+  /* confetti */
+  .confetti-piece {
+    position: fixed;
+    top: -10px;
+    width: 8px; height: 14px;
+    z-index: 999;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(540deg); opacity: 0.3; }
+  }
+
+  @media (max-width: 480px) {
+    nav a { font-size: 0.72rem; padding: 0.35rem 0.55rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#info">Detalles</a>
+  <a href="#itinerario">Itinerario</a>
+  <a href="#galeria">Galer&iacute;a</a>
+  <a href="#rsvp">Confirmar</a>
+</nav>
+
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span>&#127908; GUERRERAS POP TOUR 2026</span>
+    <span>&#11088; MARBET ANAH&Iacute; CUMPLE 8 A&Ntilde;OS</span>
+    <span>&#127881; 2 DE AGOSTO &middot; SAL&Oacute;N NASA 2000</span>
+    <span>&#127908; GUERRERAS POP TOUR 2026</span>
+    <span>&#11088; MARBET ANAH&Iacute; CUMPLE 8 A&Ntilde;OS</span>
+    <span>&#127881; 2 DE AGOSTO &middot; SAL&Oacute;N NASA 2000</span>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <div class="stage-lights">
+    <div class="beam b1"></div>
+    <div class="beam b2"></div>
+    <div class="beam b3"></div>
+    <div class="beam b4"></div>
+  </div>
+  <div class="stage-silhouette"></div>
+
+  <span class="sparkle" style="top:12%; left:10%;">&#10024;</span>
+  <span class="sparkle" style="top:20%; left:80%; animation-delay:1s;">&#11088;</span>
+  <span class="sparkle" style="top:70%; left:12%; animation-delay:2s;">&#10024;</span>
+  <span class="sparkle" style="top:65%; left:85%; animation-delay:1.5s;">&#128150;</span>
+  <span class="sparkle" style="top:40%; left:5%; animation-delay:0.5s;">&#11088;</span>
+  <span class="sparkle" style="top:45%; left:92%; animation-delay:2.5s;">&#10024;</span>
+
+  <div class="hero-badge">&#127908; Tema: Guerreras Pop</div>
+  <h1><span class="mic-emoji">&#127926;</span> &iexcl;Marbet Anah&iacute;<br>cumple <span class="age-circle">8</span> a&ntilde;os! <span class="mic-emoji">&#10024;</span></h1>
+  <p class="subtitle">Una fiesta con toda la energ&iacute;a de un concierto de &iacute;dolas &#11088;<br>&iexcl;Ven vestida lista para brillar!</p>
+
+  <div class="countdown" id="countdown">
+    <div class="unit"><div class="num" id="cd-days">--</div><div class="label">D&iacute;as</div></div>
+    <div class="unit"><div class="num" id="cd-hours">--</div><div class="label">Horas</div></div>
+    <div class="unit"><div class="num" id="cd-mins">--</div><div class="label">Min</div></div>
+    <div class="unit"><div class="num" id="cd-secs">--</div><div class="label">Seg</div></div>
+  </div>
+
+  <a href="#rsvp" class="cta-btn">&#10003; Confirmar asistencia</a>
+  <div class="scroll-hint">&#8964;</div>
+</header>
+
+<section id="info">
+  <h2 class="section-title">Todo lo que necesitas saber</h2>
+  <p class="section-subtitle">Guarda esta info &mdash; &iexcl;nos vemos ah&iacute;!</p>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="icon">&#128197;</div>
+      <h3>Fecha y hora</h3>
+      <p>Domingo 2 de agosto de 2026<br>2:00 pm</p>
+    </div>
+    <div class="card">
+      <div class="icon">&#128205;</div>
+      <h3>Lugar</h3>
+      <p>Sal&oacute;n Nasa 2000<br>Regioavenida 113, 66633 Cdad. Apodaca, N.L.</p>
+      <a class="link-btn" href="https://maps.app.goo.gl/jtKMcfDyxqDX2rvVA" target="_blank" rel="noopener">C&oacute;mo llegar &rarr;</a>
+    </div>
+    <div class="card">
+      <div class="icon">&#128222;</div>
+      <h3>Contacto</h3>
+      <p>&iquest;Dudas? Escr&iacute;benos o ll&aacute;manos.</p>
+      <a class="link-btn" href="tel:8116543076">81 1654 3076 &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section id="itinerario">
+  <h2 class="section-title">Itinerario del evento</h2>
+  <p class="section-subtitle">As&iacute; vamos a rockear la tarde</p>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="time">2:00 pm</div>
+      <div class="desc">Llegada, bienvenida y a divertirse &#127881;</div>
+    </div>
+    <div class="timeline-item">
+      <div class="time">3:30 pm</div>
+      <div class="desc">&iexcl;Comienza el show especial de Guerreras Pop! &#127908;&#11088;</div>
+    </div>
+  </div>
+  <div class="note-box">
+    <span style="font-size:1.4rem;">&#129692;</span>
+    <span><strong>No lo olvides:</strong> trae tu traje de ba&ntilde;o &mdash; &iexcl;habr&aacute; alberca! &#127939;&zwj;&#9792;&#65039;</span>
+  </div>
+</section>
+
+<section id="galeria">
+  <h2 class="section-title">Galer&iacute;a</h2>
+  <p class="section-subtitle">Un adelanto del tema Guerreras Pop</p>
+  <!--
+    GALER&Iacute;A: agrega aqu&iacute; las fotos que ya tengas con derecho de uso
+    (decoraci&oacute;n, pastel, invitaci&oacute;n f&iacute;sica, etc). Reemplaza cada
+    .photo-card por: <div class="photo-card"><img src="TU-IMAGEN.jpg" alt="..."></div>
+  -->
+  <div class="gallery-grid" id="galleryGrid">
+    <div class="photo-card"><span class="placeholder-icon">&#127908;</span>Tu foto aqu&iacute;</div>
+    <div class="photo-card"><span class="placeholder-icon">&#11088;</span>Tu foto aqu&iacute;</div>
+    <div class="photo-card"><span class="placeholder-icon">&#127881;</span>Tu foto aqu&iacute;</div>
+    <div class="photo-card"><span class="placeholder-icon">&#127926;</span>Tu foto aqu&iacute;</div>
+  </div>
+</section>
+
+<section class="message-section">
+  <h2 class="section-title">Un mensaje para ti</h2>
+  <p class="message-quote">&iexcl;Nos encantar&iacute;a contar con tu presencia, no faltes!</p>
+</section>
+
+<section id="rsvp">
+  <h2 class="section-title">Confirma tu asistencia</h2>
+  <p class="section-subtitle">Ay&uacute;danos a organizar todo &mdash; cu&eacute;ntanos si vienes</p>
+
+  <div class="rsvp-wrap">
+    <form id="rsvpForm">
+      <div>
+        <label class="field-label" for="name">Tu nombre</label>
+        <input type="text" id="name" name="name" placeholder="&iquest;C&oacute;mo te llamas?" maxlength="80" required />
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label">&iquest;Podr&aacute;s acompa&ntilde;arnos?</label>
+          <div class="attend-toggle">
+            <button type="button" id="btnYes">&#127881; &iexcl;S&iacute;, ah&iacute; estar&eacute;!</button>
+            <button type="button" id="btnNo">&#128546; No podr&eacute; ir</button>
+          </div>
+        </div>
+
+        <div id="countersWrap">
+          <div class="counters">
+            <div class="counter-box">
+              <span>Adultos</span>
+              <div class="stepper">
+                <button type="button" data-target="adults" data-delta="-1">&minus;</button>
+                <span class="count-val" id="adultsVal">1</span>
+                <button type="button" data-target="adults" data-delta="1">+</button>
+              </div>
+            </div>
+            <div class="counter-box">
+              <span>Ni&ntilde;os</span>
+              <div class="stepper">
+                <button type="button" data-target="children" data-delta="-1">&minus;</button>
+                <span class="count-val" id="childrenVal">0</span>
+                <button type="button" data-target="children" data-delta="1">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label" for="comments">Comentarios (opcional)</label>
+          <textarea id="comments" name="comments" placeholder="Alergias, mensajes para la festejada, etc."></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Confirmar asistencia</button>
+      <div class="form-msg" id="formMsg"></div>
+    </form>
+
+    <div class="success-panel" id="successPanel" style="display:none;">
+      <div class="big-emoji">&#127882;</div>
+      <h3 style="color:var(--purple); margin-top:0.6rem;">&iexcl;Gracias por confirmar!</h3>
+      <p style="color:#59495f; margin-top:0.4rem;">Ya anotamos tu respuesta. &iexcl;Nos vemos en la fiesta!</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Hecho con <span class="heart">&hearts;</span> para Marbet Anah&iacute; &mdash; &iexcl;8 a&ntilde;os de pura energ&iacute;a K-pop!
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var FIREBASE_API_KEY = "AIzaSyDXRcN9lzpCP93fGYVTPUeo_XFvNh2z-hI";
+  var PROJECT_ID = "invitaciones-mx-74a3f";
+  var INVITATION_ID = "marbet-anahi-8-2026";
+  var EVENT_DATE = new Date("2026-08-02T14:00:00");
+
+  function updateCountdown() {
+    var now = new Date();
+    var diff = EVENT_DATE.getTime() - now.getTime();
+    var elDays = document.getElementById("cd-days");
+    var elHours = document.getElementById("cd-hours");
+    var elMins = document.getElementById("cd-mins");
+    var elSecs = document.getElementById("cd-secs");
+    if (diff <= 0) {
+      elDays.textContent = "0";
+      elHours.textContent = "0";
+      elMins.textContent = "0";
+      elSecs.textContent = "0";
+      return;
+    }
+    var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    var m = Math.floor((diff / (1000 * 60)) % 60);
+    var s = Math.floor((diff / 1000) % 60);
+    elDays.textContent = d;
+    elHours.textContent = String(h).length < 2 ? "0" + h : String(h);
+    elMins.textContent = String(m).length < 2 ? "0" + m : String(m);
+    elSecs.textContent = String(s).length < 2 ? "0" + s : String(s);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  var attending = "yes";
+  var counts = { adults: 1, children: 0 };
+  var btnYes = document.getElementById("btnYes");
+  var btnNo = document.getElementById("btnNo");
+  var countersWrap = document.getElementById("countersWrap");
+
+  function renderAttendState() {
+    if (attending === "yes") {
+      btnYes.classList.add("active-yes");
+      btnNo.classList.remove("active-no");
+      countersWrap.style.display = "block";
+    } else {
+      btnNo.classList.add("active-no");
+      btnYes.classList.remove("active-yes");
+      countersWrap.style.display = "none";
+    }
+  }
+  btnYes.addEventListener("click", function () { attending = "yes"; renderAttendState(); });
+  btnNo.addEventListener("click", function () { attending = "no"; renderAttendState(); });
+  renderAttendState();
+
+  var steppers = document.querySelectorAll(".stepper button");
+  for (var i = 0; i < steppers.length; i++) {
+    steppers[i].addEventListener("click", function (ev) {
+      var btn = ev.currentTarget;
+      var target = btn.getAttribute("data-target");
+      var delta = parseInt(btn.getAttribute("data-delta"), 10);
+      var next = counts[target] + delta;
+      if (next < 0) next = 0;
+      if (next > 20) next = 20;
+      counts[target] = next;
+      document.getElementById(target + "Val").textContent = next;
+    });
+  }
+
+  function launchConfetti() {
+    var colors = ["#E11D74", "#7C3AED", "#FACC15", "#ffffff"];
+    for (var i = 0; i < 40; i++) {
+      var piece = document.createElement("div");
+      piece.className = "confetti-piece";
+      piece.style.left = (Math.random() * 100) + "vw";
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animation = "fall " + (2.5 + Math.random() * 1.5) + "s ease-in forwards";
+      piece.style.animationDelay = (Math.random() * 0.4) + "s";
+      document.body.appendChild(piece);
+      (function (p) { setTimeout(function () { p.remove(); }, 4500); })(piece);
+    }
+  }
+
+  var form = document.getElementById("rsvpForm");
+  var submitBtn = document.getElementById("submitBtn");
+  var formMsg = document.getElementById("formMsg");
+  var successPanel = document.getElementById("successPanel");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    formMsg.textContent = "";
+    formMsg.className = "form-msg";
+
+    var name = document.getElementById("name").value.trim();
+    var comments = document.getElementById("comments").value.trim();
+
+    if (!name) {
+      formMsg.textContent = "Por favor escribe tu nombre.";
+      formMsg.className = "form-msg error";
+      return;
+    }
+
+    var adults = attending === "yes" ? counts.adults : 0;
+    var children = attending === "yes" ? counts.children : 0;
+
+    var payload = {
+      fields: {
+        name: { stringValue: name.slice(0, 80) },
+        attending: { stringValue: attending },
+        adults: { integerValue: String(adults) },
+        children: { integerValue: String(children) },
+        comments: { stringValue: comments },
+        invitationId: { stringValue: INVITATION_ID },
+        createdAt: { timestampValue: new Date().toISOString() }
+      }
+    };
+
+    var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID +
+      "/databases/(default)/documents/invitations/" + INVITATION_ID + "/guests?key=" + FIREBASE_API_KEY;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Enviando...";
+
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) {
+        if (!res.ok) { throw new Error("No se pudo guardar la confirmacion."); }
+        return res.json();
+      })
+      .then(function () {
+        form.style.display = "none";
+        successPanel.style.display = "block";
+        launchConfetti();
+      })
+      .catch(function () {
+        formMsg.textContent = "No pudimos guardar tu confirmacion. Intenta de nuevo en un momento.";
+        formMsg.className = "form-msg error";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Confirmar asistencia";
+      });
+  });
+})();
+</script>
+
+</body>
+</html>
