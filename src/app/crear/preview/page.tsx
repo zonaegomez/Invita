@@ -23,7 +23,7 @@ export default function PreviewStepPage() {
   }, [hydrated, draft.images?.hero, router]);
 
   // customTheme tiene prioridad: es el ThemeConfig que arma features/ai-design
-  // cuando el usuario generó el diseño con IA (ver app/crear/plantilla/ia).
+  // cuando el usuario genero el diseno con IA (ver app/crear/plantilla/ia).
   const theme = draft.customTheme ?? (draft.templateId ? getTemplate(draft.templateId) : undefined);
 
   const viewModel: InvitationViewModel | null = useMemo(() => {
@@ -93,7 +93,8 @@ export default function PreviewStepPage() {
       localStorage.setItem("ultima-invitacion-publicada", JSON.stringify(result));
       clearDraft();
       router.push("/crear/exito");
-    } catch {
+    } catch (err) {
+      console.error("Fallo al publicar la invitacion:", err);
       setError("No pudimos publicar tu invitación. Intenta de nuevo.");
       setPublishing(false);
     }
