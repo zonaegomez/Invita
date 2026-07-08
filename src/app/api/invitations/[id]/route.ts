@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Timestamp } from "firebase-admin/firestore";
+// Importante: Timestamp viene de "@google-cloud/firestore", NO de
+// "firebase-admin/firestore". En produccion (Vercel) getAdminDb() usa
+// Workload Identity Federation e instancia @google-cloud/firestore
+// DIRECTAMENTE (ver firebase/admin.ts) -- si el Timestamp que se le pasa a
+// .update() viene de la copia interna de firebase-admin (una version
+// distinta del paquete en node_modules), el chequeo `instanceof` interno de
+// Firestore falla con "Detected an object of type Timestamp that doesn't
+// match the expected instance", y el guardado revienta con 500. Fue la causa
+// real de "no pudimos guardar los cambios" al editar la invitación.
+import { Timestamp } from "@google-cloud/firestore";
 import { getInvitationById } from "@/services/invitationService";
 import { verifyEditToken } from "@/services/guestAdminService";
 import { updateInvitationAdmin } from "@/services/invitationAdminService";

@@ -1,5 +1,8 @@
 import "server-only";
-import { Timestamp } from "firebase-admin/firestore";
+// Ver nota en app/api/invitations/[id]/route.ts: debe ser @google-cloud/firestore,
+// no firebase-admin/firestore, para que coincida con la clase Timestamp que
+// espera la instancia de Firestore que realmente usa getAdminDb() en producción (WIF).
+import { Timestamp } from "@google-cloud/firestore";
 import { getAdminDb } from "@/firebase/admin";
 
 /**

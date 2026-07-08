@@ -86,7 +86,24 @@ export async function listFamilies(invitationId: string): Promise<FamilyEntry[]>
     .orderBy("familyLabel")
     .get();
 
-  return snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<FamilyEntry, "id">) }));
+  // Solo se seleccionan los campos declarados en FamilyEntry -- el documento
+  // tambien tiene `createdAt` (un Timestamp de Firestore, una clase, no un
+  // objeto plano). Este arreglo se pasa como prop a DashboardView, que es un
+  // Client Component: React Server Components exige que las props sean
+  // objetos planos serializables, y un Timestamp filtrado rompe el render con
+  // "Only plain objects... can be passed to Client Components" (fue la causa
+  // real del crash reportado por la organizadora al entrar al dashboard).
+  return snap.docs.map((d) => {
+    const data = d.data() as Omit<FamilyEntry, "id">;
+    return {
+      id: d.id,
+      familyLabel: data.familyLabel,
+      names: data.names,
+      normalizedNames: data.normalizedNames,
+      maxGuests: data.maxGuests,
+      phone: data.phone ?? null,
+    };
+  });
 }
 
 /**
