@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>¡Marbet Anahí cumple 8 años! 🎤✨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
   --ink: #2B1331;
   --white: #FFFFFF;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; }
 body {
   font-family: 'Poppins', sans-serif;
@@ -28,7 +28,7 @@ h1, h2, h3, .display {
   font-family: 'Baloo 2', sans-serif;
 }
 a { color: inherit; }
-button { font-family: inherit; cursor: pointer; }
+button { font-family: inherit; cursor: pointer; touch-action: manipulation; }
 
 /* ---------- NAV ---------- */
 nav {
@@ -114,7 +114,7 @@ nav a:hover { background: var(--purple); color: white; }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 .hero h1 {
-  font-size: clamp(2.4rem, 8vw, 4.6rem);
+  font-size: clamp(2.2rem, 8vw, 4.6rem);
   font-weight: 800;
   line-height: 1.05;
   text-shadow: 0 6px 24px rgba(0,0,0,0.18);
@@ -134,7 +134,7 @@ nav a:hover { background: var(--purple); color: white; }
   margin: 0 0.1em;
 }
 .hero p.subtitle {
-  font-size: clamp(1.05rem, 3vw, 1.35rem);
+  font-size: clamp(1rem, 3vw, 1.35rem);
   font-weight: 500;
   opacity: 0.95;
   margin-bottom: 2.2rem;
@@ -144,7 +144,7 @@ nav a:hover { background: var(--purple); color: white; }
 /* countdown */
 .countdown {
   display: flex;
-  gap: clamp(0.5rem, 2vw, 1.1rem);
+  gap: clamp(0.4rem, 2vw, 1.1rem);
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 2.4rem;
@@ -153,13 +153,13 @@ nav a:hover { background: var(--purple); color: white; }
   background: rgba(255,255,255,0.14);
   border: 1px solid rgba(255,255,255,0.3);
   border-radius: 18px;
-  padding: 0.9rem 1rem;
-  min-width: 74px;
+  padding: 0.9rem 0.8rem;
+  min-width: 66px;
   backdrop-filter: blur(6px);
 }
 .countdown .num {
   font-family: 'Baloo 2', sans-serif;
-  font-size: clamp(1.6rem, 5vw, 2.3rem);
+  font-size: clamp(1.5rem, 5vw, 2.3rem);
   font-weight: 700;
   line-height: 1;
 }
@@ -236,7 +236,7 @@ nav a:hover { background: var(--purple); color: white; }
 section { padding: 4.5rem 1.5rem; max-width: 960px; margin: 0 auto; scroll-margin-top: 92px; }
 .section-title {
   text-align: center;
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
   font-weight: 700;
   color: var(--purple);
   margin-bottom: 0.6rem;
@@ -326,7 +326,7 @@ section { padding: 4.5rem 1.5rem; max-width: 960px; margin: 0 auto; scroll-margi
 .message-section { text-align: center; }
 .message-quote {
   font-family: 'Baloo 2', sans-serif;
-  font-size: clamp(1.3rem, 4vw, 1.9rem);
+  font-size: clamp(1.2rem, 4vw, 1.9rem);
   color: var(--purple);
   line-height: 1.4;
   max-width: 640px;
@@ -339,7 +339,7 @@ section { padding: 4.5rem 1.5rem; max-width: 960px; margin: 0 auto; scroll-margi
 .rsvp-wrap {
   background: var(--white);
   border-radius: 28px;
-  padding: clamp(1.6rem, 5vw, 3rem);
+  padding: clamp(1.4rem, 5vw, 3rem);
   box-shadow: 0 20px 50px rgba(124,58,237,0.12);
   border: 1px solid rgba(124,58,237,0.08);
 }
@@ -356,7 +356,7 @@ input[type="text"], textarea {
   border: 1.5px solid #ecdcf0;
   border-radius: 14px;
   padding: 0.75rem 1rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-family: inherit;
   background: #fffdfe;
   transition: border 0.2s, box-shadow 0.2s;
@@ -368,10 +368,21 @@ input[type="text"]:focus, textarea:focus {
 }
 textarea { resize: vertical; min-height: 80px; }
 
+/* honeypot: campo trampa para bots, oculto visualmente pero presente en el DOM */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
 .attend-toggle { display: flex; gap: 0.8rem; flex-wrap: wrap; }
 .attend-toggle button {
   flex: 1;
-  min-width: 140px;
+  min-width: 130px;
   padding: 0.85rem 1rem;
   border-radius: 14px;
   border: 1.5px solid #ecdcf0;
@@ -388,19 +399,19 @@ textarea { resize: vertical; min-height: 80px; }
 .counter-box {
   border: 1.5px solid #ecdcf0;
   border-radius: 14px;
-  padding: 0.7rem 1rem;
+  padding: 0.7rem 0.8rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.counter-box .stepper { display: flex; align-items: center; gap: 0.6rem; }
+.counter-box .stepper { display: flex; align-items: center; gap: 0.5rem; }
 .counter-box button {
-  width: 30px; height: 30px;
+  width: 36px; height: 36px;
   border-radius: 50%;
   border: none;
   background: #f3ebff;
   color: var(--purple);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -455,6 +466,14 @@ footer .heart { color: var(--pink); }
 @media (max-width: 480px) {
   nav a { font-size: 0.72rem; padding: 0.35rem 0.55rem; }
 }
+
+@media (max-width: 380px) {
+  .hero-content { padding: 2.2rem 1.1rem 2.6rem; }
+  .hero-badge { font-size: 0.75rem; padding: 0.45rem 0.9rem; }
+  .countdown .unit { min-width: 58px; padding: 0.7rem 0.5rem; }
+  .rsvp-wrap { padding: 1.1rem; }
+  .attend-toggle button { min-width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -478,7 +497,7 @@ footer .heart { color: var(--pink); }
 
 <header class="hero" id="top">
 <div class="hero-media">
-<img src="GP.png" alt="Tema Guerreras Pop - ilustración de la fiesta">
+<img src="GUARDIANMX.png" alt="Tema Guerreras Pop - ilustración de la fiesta">
 </div>
 <div class="hero-content">
 <span class="sparkle" style="top:6%; left:8%;">✨</span>
@@ -559,6 +578,11 @@ footer .heart { color: var(--pink); }
 <input type="text" id="name" name="name" placeholder="¿Cómo te llamas?" maxlength="80" required />
 </div>
 
+<div class="hp-field" aria-hidden="true">
+<label for="website">Website</label>
+<input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+</div>
+
 <div class="form-grid">
 <div>
 <label class="field-label">¿Podrás acompañarnos?</label>
@@ -619,6 +643,7 @@ var FIREBASE_API_KEY = "AIzaSyDXRcN9lzpCP93fGYVTPUeo_XFvNh2z-hI";
 var PROJECT_ID = "invitaciones-mx-74a3f";
 var INVITATION_ID = "marbet-anahi-8-2026";
 var EVENT_DATE = new Date("2026-08-02T14:00:00");
+var MAX_PEOPLE = 8;
 
 function updateCountdown() {
   var now = new Date();
@@ -675,7 +700,7 @@ for (var i = 0; i < steppers.length; i++) {
     var delta = parseInt(btn.getAttribute("data-delta"), 10);
     var next = counts[target] + delta;
     if (next < 0) next = 0;
-    if (next > 20) next = 20;
+    if (next > MAX_PEOPLE) next = MAX_PEOPLE;
     counts[target] = next;
     document.getElementById(target + "Val").textContent = next;
   });
@@ -695,15 +720,44 @@ function launchConfetti() {
   }
 }
 
+/**
+ * Normaliza el nombre a un ID de documento estable (minusculas, sin
+ * acentos, solo [a-z0-9-]). Al usar este ID como documentId al crear el
+ * RSVP, un segundo envio con el mismo nombre choca contra un documento que
+ * ya existe: Firestore lo trata como "update" y firestore.rules bloquea
+ * updates en esta subcoleccion (allow update: if false), asi que la
+ * duplicacion se rechaza sin necesidad de leer datos existentes desde el
+ * cliente (la lectura publica de RSVPs esta bloqueada por diseno).
+ */
+function slugifyName(name) {
+  var slug = name
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+  if (!slug) slug = "invitado-" + Date.now();
+  return slug;
+}
+
 var form = document.getElementById("rsvpForm");
 var submitBtn = document.getElementById("submitBtn");
 var formMsg = document.getElementById("formMsg");
 var successPanel = document.getElementById("successPanel");
+var honeypot = document.getElementById("website");
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   formMsg.textContent = "";
   formMsg.className = "form-msg";
+
+  // Honeypot: los bots suelen rellenar todos los campos, incluido este que
+  // un humano nunca ve. Si viene lleno, fingimos exito sin escribir nada.
+  if (honeypot && honeypot.value) {
+    form.style.display = "none";
+    successPanel.style.display = "block";
+    return;
+  }
 
   var name = document.getElementById("name").value.trim();
   var comments = document.getElementById("comments").value.trim();
@@ -716,6 +770,7 @@ form.addEventListener("submit", function (e) {
 
   var adults = attending === "yes" ? counts.adults : 0;
   var children = attending === "yes" ? counts.children : 0;
+  var docId = slugifyName(name);
 
   var payload = {
     fields: {
@@ -730,7 +785,8 @@ form.addEventListener("submit", function (e) {
   };
 
   var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID +
-    "/databases/(default)/documents/invitations/" + INVITATION_ID + "/guests?key=" + FIREBASE_API_KEY;
+    "/databases/(default)/documents/invitations/" + INVITATION_ID + "/guests" +
+    "?documentId=" + encodeURIComponent(docId) + "&key=" + FIREBASE_API_KEY;
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Enviando...";
@@ -741,6 +797,9 @@ form.addEventListener("submit", function (e) {
     body: JSON.stringify(payload)
   })
     .then(function (res) {
+      if (res.status === 409) {
+        throw new Error("DUPLICATE");
+      }
       if (!res.ok) { throw new Error("No se pudo guardar la confirmacion."); }
       return res.json();
     })
@@ -749,8 +808,12 @@ form.addEventListener("submit", function (e) {
       successPanel.style.display = "block";
       launchConfetti();
     })
-    .catch(function () {
-      formMsg.textContent = "No pudimos guardar tu confirmacion. Intenta de nuevo en un momento.";
+    .catch(function (err) {
+      if (err && err.message === "DUPLICATE") {
+        formMsg.textContent = "Ya registramos una confirmacion con ese nombre. Si crees que es un error, escribenos al 81 1654 3076.";
+      } else {
+        formMsg.textContent = "No pudimos guardar tu confirmacion. Intenta de nuevo en un momento.";
+      }
       formMsg.className = "form-msg error";
       submitBtn.disabled = false;
       submitBtn.textContent = "Confirmar asistencia";
