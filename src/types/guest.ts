@@ -11,6 +11,9 @@ export interface Guest {
   children: number;
   comments?: string;
   createdAt: Timestamp;
+  /** Presentes solo cuando la invitación tiene lista de invitados cargada (ver familyListAdminService). */
+  familyId?: string;
+  familyLabel?: string;
 }
 
 export type CreateGuestInput = Omit<Guest, "id" | "createdAt">;

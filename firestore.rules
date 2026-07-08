@@ -35,7 +35,15 @@ service cloud.firestore {
       // RSVP publico y abierto -- es el proposito del formulario. Se valida
       // shape/tamano basico para mitigar spam; el rate limiting real vive en
       // App Check / middleware (ver riesgos tecnicos), no en estas reglas.
-      allow create: if request.resource.data.name is string
+      //
+      // Excepcion: invitaciones con lista de invitados cargada (familyList)
+      // exigen match + tope por familia, algo que estas reglas no pueden
+      // validar (no hay forma de sumar guests existentes en una regla). Para
+      // esas, el RSVP pasa por /api/invitations/[id]/rsvp (admin SDK, bypassa
+      // reglas), y aqui se bloquea la escritura directa del cliente para que
+      // nadie evada la validacion. Ver src/app/api/invitations/[id]/rsvp.
+      allow create: if invitationId != "marbet-anahi-8-2026"
+                    && request.resource.data.name is string
                     && request.resource.data.name.size() > 0
                     && request.resource.data.name.size() <= 80
                     && request.resource.data.attending in ["yes", "no"]
@@ -47,6 +55,14 @@ service cloud.firestore {
                     && request.resource.data.children <= 20;
 
       allow read, update, delete: if false;
+    }
+
+    match /invitations/{invitationId}/familyList/{familyId} {
+      // Lista de invitados esperados, cargada por el organizador desde el
+      // dashboard (CSV/Excel) via admin SDK. Nunca se lee ni escribe desde
+      // el cliente -- el matching y el conteo de cupo ocurren server-side en
+      // /api/invitations/[id]/rsvp (ver familyListAdminService.ts).
+      allow read, write: if false;
     }
 
     match /templates/{templateId} {

@@ -1,9 +1,17 @@
 import { notFound } from "next/navigation";
 import { getInvitationById } from "@/services/invitationService";
 import { verifyEditToken, listGuests } from "@/services/guestAdminService";
+import { listFamilies } from "@/services/familyListAdminService";
 import { computeGuestStats } from "@/services/guestService";
 import { formatEventDate, toDate } from "@/utils/date";
 import { DashboardView, type SerializedGuest } from "@/features/dashboard/DashboardView";
+
+const SITE_URL = "https://invita-theta.vercel.app";
+// Excepcion: esta invitacion usa una landing estatica a medida en vez del
+// renderer generico /i/[slug] -- ver public/cumple-marbet-anahi/index.html.
+const CUSTOM_PUBLIC_URLS: Record<string, string> = {
+  "marbet-anahi-8-2026": `${SITE_URL}/cumple-marbet-anahi/index.html`,
+};
 
 /**
  * Server Component: valida editToken con el admin SDK (bypassa
@@ -37,6 +45,7 @@ export default async function DashboardPage({
 
   const guests = await listGuests(id);
   const stats = computeGuestStats(guests);
+  const families = await listFamilies(id);
 
   const serializedGuests: SerializedGuest[] = guests.map((g) => ({
     id: g.id,
@@ -46,7 +55,10 @@ export default async function DashboardPage({
     children: g.children,
     comments: g.comments,
     createdAtLabel: formatEventDate(toDate(g.createdAt)),
+    familyId: g.familyId,
   }));
+
+  const publicUrl = CUSTOM_PUBLIC_URLS[id] ?? `${SITE_URL}/i/${invitation.slug}`;
 
   return (
     <DashboardView
@@ -56,6 +68,10 @@ export default async function DashboardPage({
       guests={serializedGuests}
       stats={stats}
       editarHref={`/dashboard/${id}/editar?editToken=${editToken}`}
+      invitationId={id}
+      editToken={editToken}
+      initialFamilies={families}
+      publicUrl={publicUrl}
     />
   );
 }
