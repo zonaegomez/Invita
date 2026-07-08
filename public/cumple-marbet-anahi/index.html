@@ -67,9 +67,10 @@ nav a:hover { background: var(--purple); color: white; }
 .hero-media img {
   width: 100%;
   height: auto;
+  aspect-ratio: 3 / 2;
   max-height: 640px;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center center;
   display: block;
 }
 .hero-content {
@@ -81,6 +82,28 @@ nav a:hover { background: var(--purple); color: white; }
   padding: 3rem 1.5rem 3.5rem;
   background: linear-gradient(180deg, var(--ink) 0%, #1c0e22 100%);
   color: white;
+  overflow: hidden;
+}
+.hero-content::before,
+.hero-content::after {
+  content: "";
+  position: absolute;
+  top: -30%;
+  left: -60%;
+  width: 140%;
+  height: 180%;
+  background: linear-gradient(100deg, transparent 42%, rgba(255,255,255,0.12) 50%, transparent 58%);
+  animation: sweep 7s linear infinite;
+  pointer-events: none;
+}
+.hero-content::after {
+  left: -20%;
+  animation-delay: 3.2s;
+  background: linear-gradient(100deg, transparent 42%, rgba(250,204,21,0.14) 50%, transparent 58%);
+}
+@keyframes sweep {
+  0% { transform: translateX(-35%) rotate(12deg); }
+  100% { transform: translateX(35%) rotate(12deg); }
 }
 .sparkle {
   position: absolute;
@@ -399,12 +422,20 @@ textarea { resize: vertical; min-height: 80px; }
 .counter-box {
   border: 1.5px solid #ecdcf0;
   border-radius: 14px;
-  padding: 0.7rem 0.8rem;
+  padding: 0.9rem 0.7rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 0.55rem;
+  text-align: center;
 }
-.counter-box .stepper { display: flex; align-items: center; gap: 0.5rem; }
+.counter-box > span:first-child {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.counter-box .stepper { display: flex; align-items: center; justify-content: center; gap: 0.7rem; }
 .counter-box button {
   width: 36px; height: 36px;
   border-radius: 50%;
