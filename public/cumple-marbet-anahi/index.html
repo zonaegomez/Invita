@@ -776,6 +776,9 @@ var INVITATION_ID = "marbet-anahi-8-2026";
 var RSVP_ENDPOINT = "/api/invitations/" + INVITATION_ID + "/rsvp";
 var EVENT_DATE = new Date("2026-08-02T14:00:00");
 var MAX_PEOPLE = 8;
+// Vista previa: agrega ?vistaFotos=1 al link para ver la galeria de fotos
+// sin esperar a la fecha del evento (util para probarla de antemano).
+var FORCE_PHOTOS_PREVIEW = new URLSearchParams(window.location.search).get("vistaFotos") === "1";
 
 function updateCountdown() {
   var now = new Date();
@@ -784,7 +787,7 @@ function updateCountdown() {
   var elHours = document.getElementById("cd-hours");
   var elMins = document.getElementById("cd-mins");
   var elSecs = document.getElementById("cd-secs");
-  if (diff <= 0) {
+  if (diff <= 0 || FORCE_PHOTOS_PREVIEW) {
     elDays.textContent = "0";
     elHours.textContent = "0";
     elMins.textContent = "0";
