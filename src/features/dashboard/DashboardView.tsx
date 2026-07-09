@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Badge, Button, Card, Input } from "@/components/ui";
 import type { GuestStats } from "@/types/guest";
 import type { FamilyEntry } from "@/types/family";
+import type { PhotoEntry } from "@/types/photo";
 
 export interface SerializedGuest {
   id: string;
@@ -28,6 +29,7 @@ interface DashboardViewProps {
   editToken: string;
   initialFamilies: FamilyEntry[];
   publicUrl: string;
+  initialPhotos: PhotoEntry[];
 }
 
 export function DashboardView({
@@ -41,6 +43,7 @@ export function DashboardView({
   editToken,
   initialFamilies,
   publicUrl,
+  initialPhotos,
 }: DashboardViewProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
@@ -49,6 +52,7 @@ export function DashboardView({
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState<{ type: "ok" | "error"; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [photos] = useState<PhotoEntry[]>(initialPhotos);
 
   const confirmedByFamily = useMemo(() => {
     const map = new Map<string, number>();
@@ -233,6 +237,41 @@ export function DashboardView({
                 })}
               </tbody>
             </table>
+          </div>
+        )}
+      </Card>
+
+      <Card className="mt-4 p-5">
+        <div>
+          <h2 className="text-base font-semibold">Fotos del recuerdo ({photos.length})</h2>
+          <p className="mt-1 max-w-xl text-sm text-neutral-500">
+            El día del evento, la página pública cambia sola de &quot;confirmar asistencia&quot; a esta galería —
+            tus invitados suben sus fotos ahí y aparecen aquí automáticamente.
+          </p>
+        </div>
+
+        {photos.length === 0 ? (
+          <p className="mt-4 text-sm text-neutral-400">Todavía no hay fotos — se irán llenando el día del evento.</p>
+        ) : (
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+            {photos.map((p) => (
+              <a
+                key={p.id}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative block aspect-square overflow-hidden rounded-xl bg-neutral-100"
+                title={p.uploaderName ? `Subida por ${p.uploaderName} · ${p.createdAtLabel}` : p.createdAtLabel}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.url}
+                  alt={p.uploaderName ? `Foto de ${p.uploaderName}` : "Foto del recuerdo"}
+                  className="h-full w-full object-cover transition group-hover:scale-105"
+                  loading="lazy"
+                />
+              </a>
+            ))}
           </div>
         )}
       </Card>

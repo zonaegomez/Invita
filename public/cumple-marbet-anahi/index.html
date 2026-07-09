@@ -484,6 +484,68 @@ textarea { resize: vertical; min-height: 80px; }
 .success-panel .big-emoji { font-size: 3rem; animation: pop 0.5s ease; }
 @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
 
+/* ---------- FOTOS DEL EVENTO ---------- */
+.photo-upload-wrap { margin-bottom: 2.2rem; }
+.photo-name-field { margin-bottom: 1rem; }
+input[type="file"] {
+  width: 100%;
+  border: 1.5px dashed #ecdcf0;
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  font-size: 0.85rem;
+  background: #fffdfe;
+  margin-bottom: 1.2rem;
+}
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.7rem;
+  margin-top: 2rem;
+}
+.photo-item {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f3ebff;
+  box-shadow: 0 6px 18px rgba(124,58,237,0.1);
+}
+.photo-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.25s;
+}
+.photo-item img:hover { transform: scale(1.05); }
+.photo-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent);
+  color: white;
+  font-size: 0.68rem;
+  padding: 0.5rem 0.5rem 0.3rem;
+  pointer-events: none;
+}
+.photo-empty { text-align: center; color: #8a768f; grid-column: 1/-1; font-size: 0.9rem; padding: 1rem 0; }
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20,10,25,0.92);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+.lightbox-overlay img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
 footer {
   text-align: center;
   padding: 2.5rem 1.5rem 3rem;
@@ -523,7 +585,8 @@ footer .heart { color: var(--pink); }
 <nav>
 <a href="#info">Detalles</a>
 <a href="#itinerario">Itinerario</a>
-<a href="#rsvp">Confirmar</a>
+<a href="#rsvp" id="navConfirmar">Confirmar</a>
+<a href="#fotos" id="navFotos" style="display:none;">Fotos</a>
 </nav>
 
 <div class="marquee-bar">
@@ -673,10 +736,38 @@ footer .heart { color: var(--pink); }
 </div>
 </section>
 
+<section id="fotos" style="display:none;">
+<h2 class="section-title">📸 ¡El día llegó!</h2>
+<p class="section-subtitle">Comparte tus fotos del recuerdo y ve las de todos</p>
+
+<div class="rsvp-wrap photo-upload-wrap">
+<form id="photoForm">
+<div class="photo-name-field">
+<label class="field-label" for="photoUploaderName">Tu nombre (opcional)</label>
+<input type="text" id="photoUploaderName" name="photoUploaderName" placeholder="¿Quién comparte esta foto?" maxlength="60" />
+</div>
+<div>
+<label class="field-label" for="photoInput">Elige una o varias fotos</label>
+<input type="file" id="photoInput" name="photoInput" accept="image/*" multiple capture="environment" />
+</div>
+<button type="submit" class="submit-btn" id="photoSubmitBtn">Subir fotos</button>
+<div class="form-msg" id="photoMsg"></div>
+</form>
+</div>
+
+<div class="photo-grid" id="photoGrid"></div>
+</section>
+
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="this.style.display='none';">
+<img id="lightboxImg" src="" alt="Foto ampliada" />
+</div>
+
 <footer>
 Hecho con <span class="heart">♥</span> para Marbet Anahí — ¡8 años de pura energía K-pop!
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script>
 (function () {
 "use strict";
@@ -698,6 +789,7 @@ function updateCountdown() {
     elHours.textContent = "0";
     elMins.textContent = "0";
     elSecs.textContent = "0";
+    activateEventDayMode();
     return;
   }
   var d = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -709,6 +801,77 @@ function updateCountdown() {
   elMins.textContent = String(m).length < 2 ? "0" + m : String(m);
   elSecs.textContent = String(s).length < 2 ? "0" + s : String(s);
 }
+var firebaseConfig = {
+  apiKey: "AIzaSyDXRcN9lzpCP93fGYVTPUeo_XFvNh2z-hI",
+  authDomain: "invitaciones-mx-74a3f.firebaseapp.com",
+  projectId: "invitaciones-mx-74a3f",
+  storageBucket: "invitaciones-mx-74a3f.firebasestorage.app",
+  messagingSenderId: "159169441561",
+  appId: "1:159169441561:web:86c73542fd9722dd05df88"
+};
+if (window.firebase && !firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+var PHOTOS_ENDPOINT = "/api/invitations/" + INVITATION_ID + "/photos";
+var MAX_PHOTO_MB = 8;
+var eventDayActive = false;
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c];
+  });
+}
+
+function renderPhotos(photos) {
+  var grid = document.getElementById("photoGrid");
+  if (!grid) return;
+  if (!photos.length) {
+    grid.innerHTML = '<p class="photo-empty">Sé la primera persona en subir una foto ✨</p>';
+    return;
+  }
+  grid.innerHTML = photos.map(function (p) {
+    var caption = p.uploaderName ? '<span class="photo-caption">' + escapeHtml(p.uploaderName) + '</span>' : "";
+    var safeUrl = escapeHtml(p.url);
+    return '<div class="photo-item"><img src="' + safeUrl + '" alt="Foto del recuerdo" loading="lazy" data-full="' + safeUrl + '">' + caption + '</div>';
+  }).join("");
+}
+
+function loadGallery() {
+  fetch(PHOTOS_ENDPOINT)
+    .then(function (res) { return res.json(); })
+    .then(function (data) { renderPhotos(data.photos || []); })
+    .catch(function () {});
+}
+
+function activateEventDayMode() {
+  if (eventDayActive) return;
+  eventDayActive = true;
+  var rsvpSection = document.getElementById("rsvp");
+  var fotosSection = document.getElementById("fotos");
+  var navConfirmar = document.getElementById("navConfirmar");
+  var navFotos = document.getElementById("navFotos");
+  if (rsvpSection) rsvpSection.style.display = "none";
+  if (navConfirmar) navConfirmar.style.display = "none";
+  if (fotosSection) fotosSection.style.display = "block";
+  if (navFotos) navFotos.style.display = "";
+  loadGallery();
+}
+
+var photoGridEl = document.getElementById("photoGrid");
+if (photoGridEl) {
+  photoGridEl.addEventListener("click", function (ev) {
+    var img = ev.target.closest("img[data-full]");
+    if (!img) return;
+    var overlay = document.getElementById("lightboxOverlay");
+    var lbImg = document.getElementById("lightboxImg");
+    if (overlay && lbImg) {
+      lbImg.src = img.getAttribute("data-full");
+      overlay.style.display = "flex";
+    }
+  });
+}
+
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
@@ -833,6 +996,87 @@ form.addEventListener("submit", function (e) {
       submitBtn.textContent = "Confirmar asistencia";
     });
 });
+
+var photoForm = document.getElementById("photoForm");
+var photoInput = document.getElementById("photoInput");
+var photoMsg = document.getElementById("photoMsg");
+var photoSubmitBtn = document.getElementById("photoSubmitBtn");
+var photoNameInput = document.getElementById("photoUploaderName");
+
+if (photoForm) {
+  photoForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    photoMsg.textContent = "";
+    photoMsg.className = "form-msg";
+
+    var files = photoInput.files;
+    if (!files || !files.length) {
+      photoMsg.textContent = "Elige al menos una foto.";
+      photoMsg.className = "form-msg error";
+      return;
+    }
+    if (!window.firebase || !firebase.apps || !firebase.apps.length) {
+      photoMsg.textContent = "No se pudo conectar. Intenta de nuevo en un momento.";
+      photoMsg.className = "form-msg error";
+      return;
+    }
+
+    var tooBig = [];
+    for (var i = 0; i < files.length; i++) {
+      if (files[i].size > MAX_PHOTO_MB * 1024 * 1024) tooBig.push(files[i].name);
+    }
+    if (tooBig.length) {
+      photoMsg.textContent = "Estas fotos pesan mas de " + MAX_PHOTO_MB + "MB: " + tooBig.join(", ");
+      photoMsg.className = "form-msg error";
+      return;
+    }
+
+    var uploaderName = photoNameInput ? photoNameInput.value.trim().slice(0, 60) : "";
+    var total = files.length;
+    var done = 0;
+    var failed = 0;
+
+    function uploadOne(file) {
+      var safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+      var path = "invitations/" + INVITATION_ID + "/photos/" + Date.now() + "-" + Math.random().toString(36).slice(2) + "-" + safeName;
+      var ref = firebase.storage().ref().child(path);
+      return ref.put(file, { contentType: file.type || "image/jpeg" })
+        .then(function (snap) { return snap.ref.getDownloadURL(); })
+        .then(function (url) {
+          return fetch(PHOTOS_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: url, uploaderName: uploaderName })
+          });
+        });
+    }
+
+    photoSubmitBtn.disabled = true;
+    var chain = Promise.resolve();
+    for (var fi = 0; fi < files.length; fi++) {
+      (function (file, idx) {
+        chain = chain.then(function () {
+          photoSubmitBtn.textContent = "Subiendo " + (idx + 1) + "/" + total + "...";
+          return uploadOne(file).then(function () { done++; }).catch(function () { failed++; });
+        });
+      })(files[fi], fi);
+    }
+
+    chain.then(function () {
+      photoSubmitBtn.disabled = false;
+      photoSubmitBtn.textContent = "Subir fotos";
+      photoForm.reset();
+      if (failed) {
+        photoMsg.textContent = done + " foto(s) subidas. " + failed + " fallaron -- intenta de nuevo.";
+        photoMsg.className = "form-msg error";
+      } else {
+        photoMsg.textContent = "¡" + done + " foto(s) subidas! Gracias por compartir 💜";
+        photoMsg.className = "form-msg success";
+      }
+      loadGallery();
+    });
+  });
+}
 })();
 </script>
 

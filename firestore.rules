@@ -65,6 +65,17 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    match /invitations/{invitationId}/photos/{photoId} {
+      // Galería de fotos del día del evento (ver
+      // public/cumple-marbet-anahi/index.html). El archivo se sube directo a
+      // Storage desde el navegador (storage.rules ya lo permite, con tope de
+      // tamaño/tipo) -- este documento es solo el registro de esa foto
+      // (url + nombre de quien subió), y nunca se lee ni escribe directo
+      // desde el cliente: todo pasa por /api/invitations/[id]/photos con el
+      // admin SDK (ver photoAdminService.ts), igual que familyList.
+      allow read, write: if false;
+    }
+
     match /templates/{templateId} {
       allow read: if true;
       allow write: if false; // gestionado por codigo (lib/templates) en el MVP
