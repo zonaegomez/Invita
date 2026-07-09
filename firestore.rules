@@ -76,6 +76,16 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    match /invitations/{invitationId}/wishes/{wishId} {
+      // Muro de felicitaciones para la festejada (ver
+      // public/cumple-marbet-anahi/index.html). A diferencia de photos, esta
+      // coleccion esta disponible desde el inicio, no solo el dia del
+      // evento. Nunca se lee ni escribe directo desde el cliente: todo pasa
+      // por /api/invitations/[id]/wishes con el admin SDK (ver
+      // wishAdminService.ts), igual que photos y familyList.
+      allow read, write: if false;
+    }
+
     match /templates/{templateId} {
       allow read: if true;
       allow write: if false; // gestionado por codigo (lib/templates) en el MVP

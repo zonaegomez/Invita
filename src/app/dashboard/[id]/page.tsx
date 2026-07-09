@@ -3,6 +3,7 @@ import { getInvitationById } from "@/services/invitationService";
 import { verifyEditToken, listGuests } from "@/services/guestAdminService";
 import { listFamilies } from "@/services/familyListAdminService";
 import { listPhotos } from "@/services/photoAdminService";
+import { listWishes } from "@/services/wishAdminService";
 import { computeGuestStats } from "@/services/guestService";
 import { formatEventDate, toDate } from "@/utils/date";
 import { DashboardView, type SerializedGuest } from "@/features/dashboard/DashboardView";
@@ -48,6 +49,7 @@ export default async function DashboardPage({
   const stats = computeGuestStats(guests);
   const families = await listFamilies(id);
   const photos = await listPhotos(id);
+  const wishes = await listWishes(id);
 
   const serializedGuests: SerializedGuest[] = guests.map((g) => ({
     id: g.id,
@@ -75,6 +77,7 @@ export default async function DashboardPage({
       initialFamilies={families}
       publicUrl={publicUrl}
       initialPhotos={photos}
+      initialWishes={wishes}
     />
   );
 }

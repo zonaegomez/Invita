@@ -5,6 +5,7 @@ export const COLLECTIONS = {
   guests: "guests", // subcolección de invitations/{id}/guests
   familyList: "familyList", // subcolección de invitations/{id}/familyList -- lista de invitados esperados, admin-only
   photos: "photos", // subcolección de invitations/{id}/photos -- galería del día del evento, admin-only
+  wishes: "wishes", // subcolección de invitations/{id}/wishes -- muro de felicitaciones, admin-only
   templates: "templates",
   eventCategories: "eventCategories",
 } as const;

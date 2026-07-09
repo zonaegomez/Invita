@@ -6,6 +6,7 @@ import { Badge, Button, Card, Input } from "@/components/ui";
 import type { GuestStats } from "@/types/guest";
 import type { FamilyEntry } from "@/types/family";
 import type { PhotoEntry } from "@/types/photo";
+import type { WishEntry } from "@/types/wish";
 
 export interface SerializedGuest {
   id: string;
@@ -30,6 +31,7 @@ interface DashboardViewProps {
   initialFamilies: FamilyEntry[];
   publicUrl: string;
   initialPhotos: PhotoEntry[];
+  initialWishes: WishEntry[];
 }
 
 export function DashboardView({
@@ -44,6 +46,7 @@ export function DashboardView({
   initialFamilies,
   publicUrl,
   initialPhotos,
+  initialWishes,
 }: DashboardViewProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
@@ -53,6 +56,7 @@ export function DashboardView({
   const [uploadMsg, setUploadMsg] = useState<{ type: "ok" | "error"; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photos] = useState<PhotoEntry[]>(initialPhotos);
+  const [wishes] = useState<WishEntry[]>(initialWishes);
 
   const confirmedByFamily = useMemo(() => {
     const map = new Map<string, number>();
@@ -271,6 +275,31 @@ export function DashboardView({
                   loading="lazy"
                 />
               </a>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Card className="mt-4 p-5">
+        <div>
+          <h2 className="text-base font-semibold">Mensajes de felicitación ({wishes.length})</h2>
+          <p className="mt-1 max-w-xl text-sm text-neutral-500">
+            Están disponibles desde ahora en la página pública — cualquier invitado con el link puede dejarle
+            un mensaje a la festejada, sin esperar al día del evento.
+          </p>
+        </div>
+
+        {wishes.length === 0 ? (
+          <p className="mt-4 text-sm text-neutral-400">Todavía no hay mensajes — se irán llenando poco a poco.</p>
+        ) : (
+          <div className="mt-4 flex flex-col gap-2">
+            {wishes.map((w) => (
+              <div key={w.id} className="rounded-xl border border-neutral-100 bg-neutral-50 p-3">
+                <p className="text-sm text-neutral-700">{w.message}</p>
+                <p className="mt-1 text-xs font-medium text-neutral-400">
+                  {w.name ?? "Anónimo"} · {w.createdAtLabel}
+                </p>
+              </div>
             ))}
           </div>
         )}

@@ -546,6 +546,34 @@ input[type="file"] {
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
+/* ---------- FELICITACIONES ---------- */
+.wishes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+.wish-item {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 1rem 1.3rem;
+  box-shadow: 0 8px 22px rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.08);
+  text-align: left;
+}
+.wish-item .wish-message {
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.wish-item .wish-meta {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: #9b899f;
+  font-weight: 600;
+}
+.wishes-empty { text-align: center; color: #8a768f; font-size: 0.9rem; padding: 1rem 0; }
+
 footer {
   text-align: center;
   padding: 2.5rem 1.5rem 3rem;
@@ -585,6 +613,7 @@ footer .heart { color: var(--pink); }
 <nav>
 <a href="#info">Detalles</a>
 <a href="#itinerario">Itinerario</a>
+<a href="#felicitaciones">Felicítala</a>
 <a href="#rsvp" id="navConfirmar">Confirmar</a>
 <a href="#fotos" id="navFotos" style="display:none;">Fotos</a>
 </nav>
@@ -665,11 +694,44 @@ footer .heart { color: var(--pink); }
 <span style="font-size:1.4rem;">🏊</span>
 <span><strong>No lo olvides:</strong> trae tu traje de baño — ¡habrá alberca! 🏃‍♀️</span>
 </div>
+<div class="note-box">
+<span style="font-size:1.4rem;">📸</span>
+<span><strong>Guarda este link:</strong> el mismo día de la fiesta, esta página se convierte en la galería para subir y ver las fotos del recuerdo.</span>
+</div>
 </section>
 
 <section class="message-section">
 <h2 class="section-title"></h2>
 <p class="message-quote">¡Nos encantaría contar con tu presencia, no faltes!</p>
+</section>
+
+<section id="felicitaciones">
+<h2 class="section-title">💌 Felicítala</h2>
+<p class="section-subtitle">Déjale un mensaje a Marbet Anahí — todos podrán leerlo aquí</p>
+
+<div class="rsvp-wrap">
+<form id="wishForm">
+<div>
+<label class="field-label" for="wishName">Tu nombre (opcional)</label>
+<input type="text" id="wishName" name="wishName" placeholder="¿Quién le escribe?" maxlength="60" />
+</div>
+
+<div class="hp-field" aria-hidden="true">
+<label for="wishWebsite">Website</label>
+<input type="text" id="wishWebsite" name="wishWebsite" tabindex="-1" autocomplete="off" />
+</div>
+
+<div>
+<label class="field-label" for="wishMessage">Tu mensaje</label>
+<textarea id="wishMessage" name="wishMessage" placeholder="Escríbele unas palabras a la cumpleañera..." maxlength="300" required></textarea>
+</div>
+
+<button type="submit" class="submit-btn" id="wishSubmitBtn">Enviar felicitación</button>
+<div class="form-msg" id="wishFormMsg"></div>
+</form>
+
+<div id="wishesList" class="wishes-list"></div>
+</div>
 </section>
 
 <section id="rsvp">
@@ -817,6 +879,7 @@ if (window.firebase && !firebase.apps.length) {
 }
 
 var PHOTOS_ENDPOINT = "/api/invitations/" + INVITATION_ID + "/photos";
+var WISHES_ENDPOINT = "/api/invitations/" + INVITATION_ID + "/wishes";
 var MAX_PHOTO_MB = 8;
 var eventDayActive = false;
 
@@ -1078,6 +1141,88 @@ if (photoForm) {
       }
       loadGallery();
     });
+  });
+}
+
+function renderWishes(wishes) {
+  var list = document.getElementById("wishesList");
+  if (!list) return;
+  if (!wishes.length) {
+    list.innerHTML = '<p class="wishes-empty">Sé la primera persona en dejarle un mensaje 💌</p>';
+    return;
+  }
+  list.innerHTML = wishes.map(function (w) {
+    var who = w.name ? escapeHtml(w.name) : "Anónimo";
+    return '<div class="wish-item"><div class="wish-message">' + escapeHtml(w.message) + '</div>'
+      + '<div class="wish-meta">' + who + ' · ' + escapeHtml(w.createdAtLabel) + '</div></div>';
+  }).join("");
+}
+
+function loadWishes() {
+  fetch(WISHES_ENDPOINT)
+    .then(function (res) { return res.json(); })
+    .then(function (data) { renderWishes(data.wishes || []); })
+    .catch(function () {});
+}
+loadWishes();
+
+var wishForm = document.getElementById("wishForm");
+var wishSubmitBtn = document.getElementById("wishSubmitBtn");
+var wishFormMsg = document.getElementById("wishFormMsg");
+var wishHoneypot = document.getElementById("wishWebsite");
+
+if (wishForm) {
+  wishForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    wishFormMsg.textContent = "";
+    wishFormMsg.className = "form-msg";
+
+    if (wishHoneypot && wishHoneypot.value) {
+      wishForm.reset();
+      return;
+    }
+
+    var wishName = document.getElementById("wishName").value.trim();
+    var wishMessage = document.getElementById("wishMessage").value.trim();
+
+    if (!wishMessage) {
+      wishFormMsg.textContent = "Escribe un mensaje antes de enviar.";
+      wishFormMsg.className = "form-msg error";
+      return;
+    }
+
+    wishSubmitBtn.disabled = true;
+    wishSubmitBtn.textContent = "Enviando...";
+
+    fetch(WISHES_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: wishName.slice(0, 60),
+        message: wishMessage.slice(0, 300),
+        website: wishHoneypot ? wishHoneypot.value : ""
+      })
+    })
+      .then(function (res) {
+        return res.json().then(function (data) { return { ok: res.ok, data: data }; });
+      })
+      .then(function (result) {
+        if (!result.ok) {
+          throw new Error(result.data && result.data.error ? result.data.error : "ERROR");
+        }
+        wishForm.reset();
+        wishFormMsg.textContent = "¡Gracias por tu mensaje! 💜";
+        wishFormMsg.className = "form-msg success";
+        loadWishes();
+      })
+      .catch(function (err) {
+        wishFormMsg.textContent = err && err.message ? err.message : "No pudimos guardar tu mensaje. Intenta de nuevo.";
+        wishFormMsg.className = "form-msg error";
+      })
+      .then(function () {
+        wishSubmitBtn.disabled = false;
+        wishSubmitBtn.textContent = "Enviar felicitación";
+      });
   });
 }
 })();
