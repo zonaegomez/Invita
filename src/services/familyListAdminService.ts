@@ -77,6 +77,28 @@ export async function importFamilyList(
   return { imported: count };
 }
 
+/**
+ * Vacía la lista de invitados de una invitación (sin subir una nueva). Al
+ * quedar sin documentos en familyList, hasFamilyList() vuelve a dar false y
+ * el RSVP vuelve a modo abierto (cualquiera con el link puede registrarse) --
+ * ver app/api/invitations/[id]/rsvp/route.ts. El feature de lista sigue
+ * disponible: el organizador puede volver a subir un archivo cuando quiera.
+ */
+export async function clearFamilyList(invitationId: string): Promise<void> {
+  const db = await getAdminDb();
+  const col = db
+    .collection(COLLECTIONS.invitations)
+    .doc(invitationId)
+    .collection(COLLECTIONS.familyList);
+
+  const existing = await col.get();
+  if (!existing.size) return;
+
+  const batch = db.batch();
+  existing.docs.forEach((d) => batch.delete(d.ref));
+  await batch.commit();
+}
+
 export async function listFamilies(invitationId: string): Promise<FamilyEntry[]> {
   const db = await getAdminDb();
   const snap = await db

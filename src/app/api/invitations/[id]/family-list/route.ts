@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 import { verifyEditToken } from "@/services/guestAdminService";
-import { importFamilyList, listFamilies } from "@/services/familyListAdminService";
+import { importFamilyList, listFamilies, clearFamilyList } from "@/services/familyListAdminService";
 import type { FamilyImportRow } from "@/types/family";
 
 /**
@@ -12,6 +12,11 @@ import type { FamilyImportRow } from "@/types/family";
  * Sube un CSV/XLSX (multipart, campo "file") y reemplaza la lista vigente.
  * Columnas esperadas: Familia | Integrantes (separados por coma) | Máximo de
  * invitados | Teléfono (WhatsApp, opcional). Ver plantilla en /plantillas.
+ *
+ * DELETE /api/invitations/:id/family-list?editToken=...
+ * Vacía la lista sin subir una nueva -- el RSVP vuelve a modo abierto (ver
+ * clearFamilyList en familyListAdminService.ts). El feature sigue disponible
+ * para volver a activarlo subiendo un archivo en otro momento.
  */
 
 function readCell(row: Record<string, unknown>, keys: string[]): string {
@@ -95,4 +100,16 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   const result = await importFamilyList(id, parsed);
   return NextResponse.json({ ok: true, imported: result.imported });
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const editToken = request.nextUrl.searchParams.get("editToken");
+
+  if (!editToken || !(await verifyEditToken(id, editToken))) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
+  await clearFamilyList(id);
+  return NextResponse.json({ ok: true });
 }

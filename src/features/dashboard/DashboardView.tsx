@@ -54,6 +54,7 @@ export function DashboardView({
   const [families, setFamilies] = useState<FamilyEntry[]>(initialFamilies);
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState<{ type: "ok" | "error"; text: string } | null>(null);
+  const [clearing, setClearing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photos] = useState<PhotoEntry[]>(initialPhotos);
   const [wishes] = useState<WishEntry[]>(initialWishes);
@@ -91,6 +92,30 @@ export function DashboardView({
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  async function handleClearFamilyList() {
+    if (!window.confirm("¿Vaciar la lista de invitados? El RSVP volverá a modo abierto: cualquiera con el link podrá registrarse, sin tope por familia. Puedes volver a subir una lista cuando quieras.")) {
+      return;
+    }
+    setClearing(true);
+    setUploadMsg(null);
+    try {
+      const res = await fetch(`/api/invitations/${invitationId}/family-list?editToken=${editToken}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadMsg({ type: "error", text: data.error || "No se pudo vaciar la lista." });
+        return;
+      }
+      setFamilies([]);
+      setUploadMsg({ type: "ok", text: "Lista vaciada. El RSVP ya está en modo abierto." });
+    } catch {
+      setUploadMsg({ type: "error", text: "Error de conexión al vaciar la lista." });
+    } finally {
+      setClearing(false);
     }
   }
 
@@ -185,6 +210,11 @@ export function DashboardView({
               >
                 {families.length ? "Reemplazar lista" : "Subir lista"}
               </Button>
+              {families.length > 0 && (
+                <Button variant="ghost" size="sm" isLoading={clearing} onClick={handleClearFamilyList}>
+                  Vaciar lista
+                </Button>
+              )}
             </div>
             <input
               ref={fileInputRef}
