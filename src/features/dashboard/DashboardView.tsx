@@ -278,6 +278,7 @@ export function DashboardView({
       </Card>
 
       {showExtras && (
+      <>
       <Card className="mt-4 p-5">
         <div>
           <h2 className="text-base font-semibold">Fotos del recuerdo ({photos.length})</h2>
@@ -337,6 +338,7 @@ export function DashboardView({
           </div>
         )}
       </Card>
+      </>
       )}
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
