@@ -48,8 +48,14 @@ export default async function DashboardPage({
   const guests = await listGuests(id);
   const stats = computeGuestStats(guests);
   const families = await listFamilies(id);
-  const photos = await listPhotos(id);
-  const wishes = await listWishes(id);
+
+  // Fotos/felicitaciones solo existen en la landing estatica a medida (ver
+  // CUSTOM_PUBLIC_URLS) -- las invitaciones genericas (/i/[slug]) no tienen
+  // esa UI, asi que ni siquiera vale la pena leer esas colecciones ni
+  // mostrar las tarjetas correspondientes en el dashboard.
+  const hasCustomFeatures = id in CUSTOM_PUBLIC_URLS;
+  const photos = hasCustomFeatures ? await listPhotos(id) : [];
+  const wishes = hasCustomFeatures ? await listWishes(id) : [];
 
   const serializedGuests: SerializedGuest[] = guests.map((g) => ({
     id: g.id,
@@ -78,6 +84,7 @@ export default async function DashboardPage({
       publicUrl={publicUrl}
       initialPhotos={photos}
       initialWishes={wishes}
+      showExtras={hasCustomFeatures}
     />
   );
 }
