@@ -43,6 +43,21 @@ export const TEMPLATE_REGISTRY: Record<string, ThemeConfig> = {
     assets: {},
     sectionVariants: { hero: "centered", countdown: "minimal", gallery: "grid" },
   },
+  "pool-party": {
+    id: "pool-party",
+    categoryId: "infantil",
+    name: "Pool Party",
+    layout: "playful",
+    palette: {
+      primary: "#0EA5E9",
+      secondary: "#F97316",
+      accent: "#FBBF24",
+      background: "#F0FBFF",
+    },
+    fonts: { stack: "playful" },
+    assets: {},
+    sectionVariants: { hero: "centered", countdown: "cards", gallery: "grid" },
+  },
   "elegancia-blush": {
     id: "elegancia-blush",
     categoryId: "boda",
