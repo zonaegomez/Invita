@@ -80,9 +80,6 @@ body{min-height:100vh;overflow-x:hidden}
 #introVid{position:absolute;left:0;top:0;width:720px;height:1280px;object-fit:cover;background:#080B1B}
 #scrim{position:absolute;left:0;top:640px;width:720px;height:640px;background:linear-gradient(180deg,rgba(8,11,27,0) 0%,rgba(8,11,27,.62) 22%,rgba(8,11,27,.84) 100%);opacity:0;transition:opacity .8s ease;pointer-events:none}
 #scrim.on{opacity:1}
-#launchBtn{position:absolute;left:50%;top:1000px;transform:translateX(-50%);white-space:nowrap;font-family:'Orbitron',sans-serif;font-weight:900;font-size:36px;letter-spacing:2px;color:#080B1B;background:#E5F20B;border:none;border-radius:999px;padding:28px 46px;cursor:pointer;box-shadow:0 0 0 6px rgba(229,242,11,.25),0 12px 40px rgba(0,0,0,.6);animation:pulse 1.6s ease-in-out infinite;transition:opacity .4s ease}
-#launchBtn.gone{opacity:0;pointer-events:none;animation:none}
-@keyframes pulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
 /* ===== Controles (fuera de la invitación) ===== */
 #controls{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;padding:12px 12px 14px;background:#05070f;border-top:1px solid #1c2342}
 #controls button,.cta{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#fff;background:#171E40;border:1px solid #49345F;border-radius:999px;padding:10px 18px;cursor:pointer;text-decoration:none}
@@ -90,8 +87,12 @@ body{min-height:100vh;overflow-x:hidden}
 #controls button:active,.cta:active{transform:scale(.97)}
 .cta.primary{background:var(--lime);color:#080B1B;border-color:var(--lime)}
 
+#ubicacion{padding:48px 22px 8px;background:radial-gradient(120% 80% at 50% 0%,#171E40 0%,#080B1B 75%);text-align:center}
+#ubicacion .addr{margin:18px auto 0;font-family:'Archivo Black','Arial Black',sans-serif;font-size:24px;line-height:1.25;color:var(--lime);text-transform:uppercase;text-shadow:0 3px 12px rgba(0,0,0,.6)}
+#ubicacion .venue{margin-top:10px;font-size:12px;letter-spacing:2px;color:var(--metal)}
+.maps-btn{display:inline-block;margin-top:22px;background:var(--lime);color:#080B1B;border-radius:14px;padding:15px 26px;font:900 14px 'Orbitron',sans-serif;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none}
 /* ===== RSVP ===== */
-#rsvp{padding:56px 22px 70px;background:radial-gradient(120% 80% at 50% 0%,#171E40 0%,#080B1B 70%);text-align:center}
+#rsvp{padding:44px 22px 70px;background:radial-gradient(120% 80% at 50% 0%,#171E40 0%,#080B1B 70%);text-align:center}
 .section-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:26px;letter-spacing:2px;text-transform:uppercase;color:#fff}
 .section-subtitle{margin-top:8px;font-size:12px;letter-spacing:1px;color:var(--metal)}
 .rsvp-wrap{max-width:460px;margin:26px auto 0;background:rgba(23,30,64,.65);border:1px solid #49345F;border-radius:20px;padding:22px;text-align:left;box-shadow:0 10px 40px rgba(0,0,0,.45)}
@@ -137,25 +138,13 @@ footer{padding:22px;text-align:center;font-size:11px;color:#6b7390;background:#0
   </video>
   <div id="scrim"></div>
 
-  <!-- Botón de inicio dentro del lienzo -->
-  <button id="launchBtn" type="button">🚀 INICIAR DESPEGUE</button>
-
   <!-- Escena 1: fecha y horario -->
-  <div id="tEsperamos" class="t sub" data-in="1.0" data-out="7.0">TE ESPERAMOS ESTE</div>
-  <div id="dateCol" class="t lime" data-in="1.15" data-out="7.0">
+  <div id="tEsperamos" class="t sub" data-in="1.0" data-out="999">TE ESPERAMOS ESTE</div>
+  <div id="dateCol" class="t lime" data-in="1.15" data-out="999">
     <div class="dow">JUEVES</div><div class="day">22</div><div class="mon">OCTUBRE</div>
   </div>
-  <div id="timeCol" class="t lime" data-in="1.3" data-out="7.0">De 5:00 pm<br>A 8:00 pm</div>
+  <div id="timeCol" class="t lime" data-in="1.3" data-out="999">De 5:00 pm<br>A 8:00 pm</div>
 
-  <!-- Escena 2: ubicación -->
-  <div id="tUbicacion" class="t sub fade nomove" data-in="7.6" data-out="999">UBICACIÓN</div>
-  <div id="addr">
-    <div class="ln" data-in="8.6" style="top:0px">GENERAL BONIFACIO</div>
-    <div class="ln" data-in="8.85" style="top:55px">SALINAS LEAL #5000</div>
-    <div class="ln" data-in="9.1" style="top:110px">COLONIA TORRES DE</div>
-    <div class="ln" data-in="9.35" style="top:165px">LINDA VISTA</div>
-    <div class="ln" data-in="9.6" style="top:220px">GUADALUPE NL</div>
-  </div>
 </div>
 </div>
 </div>
@@ -165,8 +154,16 @@ footer{padding:22px;text-align:center;font-size:11px;color:#6b7390;background:#0
   <button id="btnPlay" type="button" style="display:none">⏸ Pausa</button>
   <button id="btnRestart" type="button" style="display:none">↺ Despegar otra vez</button>
   <button id="btnSound" type="button" style="display:none">🔇 Música</button>
+  <a class="cta" href="#ubicacion">Ubicación ↓</a>
   <a class="cta" href="#rsvp">Confirmar asistencia ↓</a>
 </div>
+
+<section id="ubicacion">
+  <h2 class="section-title">Ubicación</h2>
+  <p class="venue">SKYFUN</p>
+  <div class="addr">General Bonifacio<br>Salinas Leal #5000<br>Colonia Torres de<br>Linda Vista<br>Guadalupe NL</div>
+  <a class="maps-btn" href="https://maps.app.goo.gl/sK24vE9GQmPFuzeL9" target="_blank" rel="noopener">📍 Abrir en Google Maps</a>
+</section>
 
 <section id="rsvp">
   <h2 class="section-title">Confirma tu asistencia</h2>
@@ -247,7 +244,6 @@ fit();
 var timed = Array.prototype.slice.call(stage.querySelectorAll("[data-in]"));
 var vid = document.getElementById("introVid");
 var scrim = document.getElementById("scrim");
-var launchBtn = document.getElementById("launchBtn");
 var btnStart = document.getElementById("btnStart");
 var btnPlay = document.getElementById("btnPlay");
 var btnRestart = document.getElementById("btnRestart");
@@ -275,7 +271,6 @@ function tick(ts) {
 
 function startShow() {
   started = true; playing = true; t = 0;
-  launchBtn.classList.add("gone");
   btnStart.style.display = "none";
   btnPlay.style.display = ""; btnRestart.style.display = "";
   btnPlay.textContent = "⏸ Pausa";
@@ -283,7 +278,6 @@ function startShow() {
   if (audio) { audio.currentTime = 0; audio.play().catch(function(){}); }
   applyTime(0);
 }
-launchBtn.addEventListener("click", startShow);
 btnStart.addEventListener("click", startShow);
 
 btnPlay.addEventListener("click", function () {
