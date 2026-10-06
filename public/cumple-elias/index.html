@@ -64,24 +64,29 @@ body{min-height:100vh;overflow-x:hidden}
 #age.on{transform:translateY(0) skewX(-8deg)}
 
 .sub{font-family:'Michroma',sans-serif;font-size:27px;letter-spacing:2px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.85)}
-#tEsperamos{top:380px}
-#tUbicacion{top:380px}
+#tEsperamos{top:800px}
+#tUbicacion{top:800px}
 
 .lime{font-family:'Orbitron',sans-serif;font-weight:900;color:var(--lime);text-shadow:0 3px 12px rgba(0,0,0,.8)}
-#dateCol{left:36px;right:auto;width:348px;top:455px}
+#dateCol{left:36px;right:auto;width:348px;top:860px}
 #dateCol .dow{font-size:40px;line-height:1.1}
 #dateCol .day{font-size:100px;line-height:1.05}
 #dateCol .mon{font-size:40px;line-height:1.1}
-#timeCol{left:384px;right:36px;top:530px;font-size:43px;line-height:1.35}
-#addr{top:455px;bottom:auto;height:275px}
+#timeCol{left:384px;right:36px;top:960px;font-size:43px;line-height:1.35}
+#addr{position:absolute;left:36px;right:36px;top:870px;height:275px;text-align:center}
 #addr .ln{position:absolute;left:0;right:0;font-family:'Archivo Black','Arial Black',sans-serif;font-size:34px;line-height:1.15;color:var(--lime);text-transform:uppercase;text-shadow:0 3px 12px rgba(0,0,0,.85);opacity:0;transition:opacity .25s ease}
 #addr .ln.on{opacity:1}
 
-#introVid{position:absolute;left:0;top:0;width:720px;height:1280px;object-fit:cover;background:#080B1B;opacity:1;transition:opacity .7s ease;z-index:5}
-#introVid.gone{opacity:0;pointer-events:none}
+#introVid{position:absolute;left:0;top:0;width:720px;height:1280px;object-fit:cover;background:#080B1B}
+#scrim{position:absolute;left:0;top:640px;width:720px;height:640px;background:linear-gradient(180deg,rgba(8,11,27,0) 0%,rgba(8,11,27,.62) 22%,rgba(8,11,27,.84) 100%);opacity:0;transition:opacity .8s ease;pointer-events:none}
+#scrim.on{opacity:1}
+#launchBtn{position:absolute;left:50%;top:1000px;transform:translateX(-50%);white-space:nowrap;font-family:'Orbitron',sans-serif;font-weight:900;font-size:36px;letter-spacing:2px;color:#080B1B;background:#E5F20B;border:none;border-radius:999px;padding:28px 46px;cursor:pointer;box-shadow:0 0 0 6px rgba(229,242,11,.25),0 12px 40px rgba(0,0,0,.6);animation:pulse 1.6s ease-in-out infinite;transition:opacity .4s ease}
+#launchBtn.gone{opacity:0;pointer-events:none;animation:none}
+@keyframes pulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
 /* ===== Controles (fuera de la invitación) ===== */
 #controls{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;padding:12px 12px 14px;background:#05070f;border-top:1px solid #1c2342}
 #controls button,.cta{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#fff;background:#171E40;border:1px solid #49345F;border-radius:999px;padding:10px 18px;cursor:pointer;text-decoration:none}
+#controls button.primary{background:var(--lime);color:#080B1B;border-color:var(--lime)}
 #controls button:active,.cta:active{transform:scale(.97)}
 .cta.primary{background:var(--lime);color:#080B1B;border-color:var(--lime)}
 
@@ -125,49 +130,42 @@ footer{padding:22px;text-align:center;font-size:11px;color:#6b7390;background:#0
 <div id="stageWrap">
 <div id="stageBox">
 <div id="stage" aria-label="Invitación animada de cumpleaños de Elías">
-  <div id="bg" class="layer"></div>
-  <div id="jupiter" class="planet"></div>
-  <div id="mars" class="planet"></div>
-  <div id="moon" class="planet"></div>
-  <div id="astro"></div>
-  <!-- Logotipo provisional: sustituir por el archivo oficial (ver README al final del archivo) -->
-  <div id="logo" aria-label="SKYFUN"><span class="c1">S</span><span class="c2">K</span><span class="c3">Y</span><span class="c4">F</span><span class="c5">U</span><span class="c6">N</span></div>
-
-  <!-- Escena 1: animación de apertura (0–6.4 s) -->
-  <video id="introVid" playsinline muted preload="auto" poster="poster.jpg">
+  <!-- Fondo: GIF de Elías flotando (convertido a video en bucle). Reemplazable: intro.mp4 / intro.webm / poster.jpg -->
+  <video id="introVid" autoplay loop muted playsinline preload="auto" poster="poster.jpg">
     <source src="intro.webm" type="video/webm">
     <source src="intro.mp4" type="video/mp4">
   </video>
+  <div id="scrim"></div>
 
-  <!-- Encabezado persistente (3–19 s) -->
-  <div id="name" class="t" data-in="6.4" data-out="999">ELIAS</div>
-  <div id="age" class="t" data-in="6.55" data-out="999">CUMPLO 6</div>
+  <!-- Botón de inicio dentro del lienzo -->
+  <button id="launchBtn" type="button">🚀 INICIAR DESPEGUE</button>
 
-  <!-- Escena 2: fecha y horario (3–9 s) -->
-  <div id="tEsperamos" class="t sub" data-in="7.0" data-out="12.4">TE ESPERAMOS ESTE</div>
-  <div id="dateCol" class="t lime" data-in="7.15" data-out="12.4">
+  <!-- Escena 1: fecha y horario -->
+  <div id="tEsperamos" class="t sub" data-in="1.0" data-out="7.0">TE ESPERAMOS ESTE</div>
+  <div id="dateCol" class="t lime" data-in="1.15" data-out="7.0">
     <div class="dow">JUEVES</div><div class="day">22</div><div class="mon">OCTUBRE</div>
   </div>
-  <div id="timeCol" class="t lime" data-in="7.3" data-out="12.4">De 5:00 pm<br>A 8:00 pm</div>
+  <div id="timeCol" class="t lime" data-in="1.3" data-out="7.0">De 5:00 pm<br>A 8:00 pm</div>
 
-  <!-- Escena 3: ubicación (9–19 s) -->
-  <div id="tUbicacion" class="t sub fade nomove" data-in="13.0" data-out="999">UBICACIÓN</div>
-  <div id="addr" class="t nomove" data-in="0" data-out="0" style="opacity:1;transform:none">
-    <div class="ln" data-in="14.4" style="top:0px">GENERAL BONIFACIO</div>
-    <div class="ln" data-in="14.65" style="top:55px">SALINAS LEAL #5000</div>
-    <div class="ln" data-in="14.9" style="top:110px">COLONIA TORRES DE</div>
-    <div class="ln" data-in="15.15" style="top:165px">LINDA VISTA</div>
-    <div class="ln" data-in="15.4" style="top:220px">GUADALUPE NL</div>
+  <!-- Escena 2: ubicación -->
+  <div id="tUbicacion" class="t sub fade nomove" data-in="7.6" data-out="999">UBICACIÓN</div>
+  <div id="addr">
+    <div class="ln" data-in="8.6" style="top:0px">GENERAL BONIFACIO</div>
+    <div class="ln" data-in="8.85" style="top:55px">SALINAS LEAL #5000</div>
+    <div class="ln" data-in="9.1" style="top:110px">COLONIA TORRES DE</div>
+    <div class="ln" data-in="9.35" style="top:165px">LINDA VISTA</div>
+    <div class="ln" data-in="9.6" style="top:220px">GUADALUPE NL</div>
   </div>
 </div>
 </div>
 </div>
 
 <div id="controls">
-  <button id="btnPlay" type="button">⏸ Pausa</button>
-  <button id="btnRestart" type="button">↺ Reiniciar</button>
+  <button id="btnStart" class="primary" type="button">🚀 Iniciar despegue</button>
+  <button id="btnPlay" type="button" style="display:none">⏸ Pausa</button>
+  <button id="btnRestart" type="button" style="display:none">↺ Despegar otra vez</button>
   <button id="btnSound" type="button" style="display:none">🔇 Música</button>
-  <a class="cta primary" href="#rsvp">Confirmar asistencia ↓</a>
+  <a class="cta" href="#rsvp">Confirmar asistencia ↓</a>
 </div>
 
 <section id="rsvp">
@@ -228,7 +226,6 @@ footer{padding:22px;text-align:center;font-size:11px;color:#6b7390;background:#0
 var INVITATION_ID = "d94c8855-a511-49c5-afdd-ad00d0faff9b";
 var RSVP_ENDPOINT = "/api/invitations/" + INVITATION_ID + "/rsvp";
 var MAX_PEOPLE = 10;
-var DURATION = 22.4;        // segundos totales de la animación
 var AUDIO_URL = "";         // pista opcional (ej. "musica.mp3"); vacío = sin música
 var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -248,69 +245,57 @@ fit();
 
 /* ============ LÍNEA DE TIEMPO ============ */
 var timed = Array.prototype.slice.call(stage.querySelectorAll("[data-in]"));
-var bg = document.getElementById("bg");
-var jup = document.getElementById("jupiter");
-var mars = document.getElementById("mars");
-var moon = document.getElementById("moon");
 var vid = document.getElementById("introVid");
-var INTRO_END = 6.4;
-var t = 0, playing = true, last = null;
+var scrim = document.getElementById("scrim");
+var launchBtn = document.getElementById("launchBtn");
+var btnStart = document.getElementById("btnStart");
+var btnPlay = document.getElementById("btnPlay");
+var btnRestart = document.getElementById("btnRestart");
+var t = 0, started = false, playing = false, last = null;
 
 function applyTime(now) {
+  scrim.classList.toggle("on", started && now >= 0.3);
   for (var i = 0; i < timed.length; i++) {
     var el = timed[i];
     var a = parseFloat(el.getAttribute("data-in"));
     var bAttr = el.getAttribute("data-out");
     var b = bAttr === null ? Infinity : parseFloat(bAttr);
-    var isCd = el.classList.contains("cd");
     var isLn = el.classList.contains("ln");
-    var on = now >= a && (isLn ? true : now < b);
-    if (el.id === "addr") continue;
-    if (isCd) {
-      el.classList.toggle("on", on);
-      el.classList.toggle("out", now >= b);
-    } else if (b >= 999 || isLn) {
-      el.classList.toggle("on", now >= a);
-    } else {
-      // visible entre a y b; la salida es solo opacidad
-      el.classList.toggle("on", on);
-    }
-  }
-  if (vid) { vid.classList.toggle("gone", now >= INTRO_END - 0.2); }
-  var p = Math.min(now / DURATION, 1);
-  if (!reduceMotion) {
-    bg.style.transform = "scale(" + (1 + 0.04 * p) + ")";
-    jup.style.transform = "translate(" + (p * 26) + "px," + (p * 14) + "px)";
-    mars.style.transform = "translate(" + (-p * 18) + "px," + (p * 22) + "px)";
-    moon.style.transform = "translate(" + (-p * 24) + "px," + (-p * 12) + "px)";
+    var on = started && now >= a && (isLn || b >= 999 ? true : now < b);
+    el.classList.toggle("on", on);
   }
 }
 
 function tick(ts) {
   if (last === null) last = ts;
-  if (playing) {
-    t += (ts - last) / 1000;
-    if (t >= DURATION) { t = DURATION; }
-    if (vid && t < INTRO_END && vid.paused) { vid.play().catch(function(){}); }
-    applyTime(t);
-  }
+  if (playing) { t += (ts - last) / 1000; applyTime(t); }
   last = ts;
   requestAnimationFrame(tick);
 }
 
-var btnPlay = document.getElementById("btnPlay");
+function startShow() {
+  started = true; playing = true; t = 0;
+  launchBtn.classList.add("gone");
+  btnStart.style.display = "none";
+  btnPlay.style.display = ""; btnRestart.style.display = "";
+  btnPlay.textContent = "⏸ Pausa";
+  if (vid) { vid.play().catch(function(){}); }
+  if (audio) { audio.currentTime = 0; audio.play().catch(function(){}); }
+  applyTime(0);
+}
+launchBtn.addEventListener("click", startShow);
+btnStart.addEventListener("click", startShow);
+
 btnPlay.addEventListener("click", function () {
   playing = !playing;
   btnPlay.textContent = playing ? "⏸ Pausa" : "▶ Reproducir";
   if (vid) { playing ? vid.play().catch(function(){}) : vid.pause(); }
   if (audio) { playing ? audio.play().catch(function(){}) : audio.pause(); }
 });
-document.getElementById("btnRestart").addEventListener("click", function () {
-  t = 0; playing = true; btnPlay.textContent = "⏸ Pausa";
-  if (vid) { vid.currentTime = 0; vid.play().catch(function(){}); }
-  for (var i = 0; i < timed.length; i++) { timed[i].classList.remove("on", "out"); }
-  applyTime(0);
-  if (audio) { audio.currentTime = 0; audio.play().catch(function(){}); }
+btnRestart.addEventListener("click", function () {
+  for (var i = 0; i < timed.length; i++) { timed[i].classList.remove("on"); }
+  startShow();
+  if (vid) { vid.currentTime = 0; }
 });
 
 /* Audio opcional (no se añade música por defecto) */
@@ -325,8 +310,8 @@ if (AUDIO_URL) {
   });
 }
 
-if (reduceMotion) { t = DURATION; if (vid) { vid.pause(); } }
-applyTime(t);
+if (reduceMotion && vid) { vid.removeAttribute("autoplay"); vid.pause(); }
+applyTime(0);
 requestAnimationFrame(tick);
 
 /* ============ RSVP ============ */
