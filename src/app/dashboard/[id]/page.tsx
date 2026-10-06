@@ -13,6 +13,8 @@ const SITE_URL = "https://invita-theta.vercel.app";
 // renderer generico /i/[slug] -- ver public/cumple-marbet-anahi/index.html.
 const CUSTOM_PUBLIC_URLS: Record<string, string> = {
   "marbet-anahi-8-2026": `${SITE_URL}/cumple-marbet-anahi/index.html`,
+  // Invitacion espacial de Elias: landing animada a medida (solo cuenta regresiva + RSVP).
+  "d94c8855-a511-49c5-afdd-ad00d0faff9b": `${SITE_URL}/cumple-elias/index.html`,
 };
 
 /**
@@ -53,7 +55,7 @@ export default async function DashboardPage({
   // CUSTOM_PUBLIC_URLS) -- las invitaciones genericas (/i/[slug]) no tienen
   // esa UI, asi que ni siquiera vale la pena leer esas colecciones ni
   // mostrar las tarjetas correspondientes en el dashboard.
-  const hasCustomFeatures = id in CUSTOM_PUBLIC_URLS;
+  const hasCustomFeatures = id === "marbet-anahi-8-2026";
   const photos = hasCustomFeatures ? await listPhotos(id) : [];
   const wishes = hasCustomFeatures ? await listWishes(id) : [];
 

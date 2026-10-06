@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>¡Elías cumple 6 años! 🚀</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="¡Elías cumple 6 años! 🚀">
+<meta property="og:description" content="Te invito a mi fiesta espacial · Jueves 22 de octubre · 5:00 pm. ¡Confirma tu asistencia!">
+<meta property="og:image" content="https://invita-theta.vercel.app/cumple-elias/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:url" content="https://invita-theta.vercel.app/cumple-elias/index.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="¡Elías cumple 6 años! 🚀">
+<meta name="twitter:description" content="Te invito a mi fiesta espacial · Jueves 22 de octubre · 5:00 pm.">
+<meta name="twitter:image" content="https://invita-theta.vercel.app/cumple-elias/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Michroma&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080B1B; --blue:#171E40; --violet:#49345F; --magenta:#70466D;
+  --white:#FFFFFF; --lime:#E5F20B; --metal:#B8BDC5; --metal-dark:#424C56;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--white);font-family:'Michroma','Orbitron',sans-serif;-webkit-text-size-adjust:100%}
+body{min-height:100vh;overflow-x:hidden}
+
+/* ===== Escenario 9:16 (lienzo 720x1280, escalado por JS) ===== */
+#stageWrap{position:relative;width:100%;display:flex;justify-content:center;background:#000}
+#stageBox{position:relative;overflow:hidden;background:var(--bg)}
+#stage{position:absolute;left:0;top:0;width:720px;height:1280px;transform-origin:0 0;overflow:hidden;background:var(--bg)}
+.layer{position:absolute;left:0;top:0}
+#bg{width:720px;height:1280px;background:url('bg.jpg') center/cover no-repeat;transform-origin:50% 50%;will-change:transform}
+.planet{position:absolute;pointer-events:none;will-change:transform}
+#jupiter{width:520px;height:520px;left:-150px;top:-190px;background:url('jupiter.png') center/contain no-repeat}
+#mars{width:120px;height:120px;left:628px;top:318px;background:url('mars.png') center/contain no-repeat;opacity:.92}
+#moon{width:120px;height:120px;left:580px;top:742px;background:url('moon.png') center/contain no-repeat;opacity:.95}
+#astro{position:absolute;left:40px;top:830px;width:640px;height:462px;background:url('astronaut.png') center/contain no-repeat;animation:floaty 5s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* Logotipo provisional (reemplazable) */
+#logo{position:absolute;left:0;width:720px;top:1128px;height:80px;text-align:center;font-family:'Archivo Black','Arial Black',sans-serif;font-size:66px;letter-spacing:1px;line-height:80px;transform:rotate(-4deg)}
+#logo span{-webkit-text-stroke:5px #fff;paint-order:stroke fill;text-shadow:0 4px 0 rgba(0,0,0,.35)}
+#logo .c1{color:#00D2FF}#logo .c2{color:#FF2BB0}#logo .c3{color:#FFE600}#logo .c4{color:#00D2FF}#logo .c5{color:#FF2BB0}#logo .c6{color:#FFE600}
+
+/* ===== Textos (separados de las imágenes y editables) ===== */
+.t{position:absolute;left:36px;right:36px;text-align:center;opacity:0;transform:translateY(20px);transition:opacity .4s ease,transform .4s ease;will-change:opacity,transform}
+.t.on{opacity:1;transform:translateY(0)}
+.t.fade{transition:opacity .6s ease}
+.t.nomove{transform:none}
+
+#intro{top:60px;font-family:'Michroma',sans-serif;font-size:40px;line-height:1.35;letter-spacing:3px;text-shadow:0 2px 14px rgba(0,0,0,.8)}
+.cd{position:absolute;left:0;width:720px;top:330px;text-align:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:430px;line-height:1;opacity:0;transform:scale(1.7) rotate(-6deg);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.9,.3,1)}
+.cd.on{opacity:1;transform:scale(1) rotate(-6deg)}
+.cd.out{opacity:0;transform:scale(.92) rotate(-6deg);transition:opacity .4s ease,transform .4s ease}
+.cd b{font-weight:900;background:linear-gradient(180deg,#fff 0%,#dfe3e8 30%,#8f98a3 48%,#424C56 52%,#9aa3ad 70%,#e9ecef 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:3px #424C56;filter:drop-shadow(0 8px 6px rgba(0,0,0,.65)) drop-shadow(0 0 18px rgba(184,189,197,.35))}
+
+#name{top:55px;font-family:'Ethnocentric','Orbitron',sans-serif;font-weight:900;font-size:90px;line-height:1;letter-spacing:4px;transform:translateY(20px) skewX(-8deg);text-shadow:0 4px 18px rgba(0,0,0,.85)}
+#name.on{transform:translateY(0) skewX(-8deg)}
+#age{top:197px;font-family:'Ethnocentric','Orbitron',sans-serif;font-weight:900;font-size:54px;line-height:1;letter-spacing:3px;transform:translateY(20px) skewX(-8deg);text-shadow:0 4px 14px rgba(0,0,0,.85)}
+#age.on{transform:translateY(0) skewX(-8deg)}
+
+.sub{font-family:'Michroma',sans-serif;font-size:27px;letter-spacing:2px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.85)}
+#tEsperamos{top:380px}
+#tUbicacion{top:380px}
+
+.lime{font-family:'Orbitron',sans-serif;font-weight:900;color:var(--lime);text-shadow:0 3px 12px rgba(0,0,0,.8)}
+#dateCol{left:36px;right:auto;width:348px;top:455px}
+#dateCol .dow{font-size:40px;line-height:1.1}
+#dateCol .day{font-size:100px;line-height:1.05}
+#dateCol .mon{font-size:40px;line-height:1.1}
+#timeCol{left:384px;right:36px;top:530px;font-size:43px;line-height:1.35}
+#addr{top:455px;bottom:auto;height:275px}
+#addr .ln{position:absolute;left:0;right:0;font-family:'Archivo Black','Arial Black',sans-serif;font-size:34px;line-height:1.15;color:var(--lime);text-transform:uppercase;text-shadow:0 3px 12px rgba(0,0,0,.85);opacity:0;transition:opacity .25s ease}
+#addr .ln.on{opacity:1}
+
+/* ===== Controles (fuera de la invitación) ===== */
+#controls{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;padding:12px 12px 14px;background:#05070f;border-top:1px solid #1c2342}
+#controls button,.cta{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#fff;background:#171E40;border:1px solid #49345F;border-radius:999px;padding:10px 18px;cursor:pointer;text-decoration:none}
+#controls button:active,.cta:active{transform:scale(.97)}
+.cta.primary{background:var(--lime);color:#080B1B;border-color:var(--lime)}
+
+/* ===== RSVP ===== */
+#rsvp{padding:56px 22px 70px;background:radial-gradient(120% 80% at 50% 0%,#171E40 0%,#080B1B 70%);text-align:center}
+.section-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:26px;letter-spacing:2px;text-transform:uppercase;color:#fff}
+.section-subtitle{margin-top:8px;font-size:12px;letter-spacing:1px;color:var(--metal)}
+.rsvp-wrap{max-width:460px;margin:26px auto 0;background:rgba(23,30,64,.65);border:1px solid #49345F;border-radius:20px;padding:22px;text-align:left;box-shadow:0 10px 40px rgba(0,0,0,.45)}
+.field-label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--metal);margin-bottom:7px}
+input[type=text],textarea{width:100%;background:#0b1024;border:1px solid #2c3562;border-radius:12px;color:#fff;font:16px 'Orbitron',sans-serif;padding:13px 14px;outline:none}
+input[type=text]:focus,textarea:focus{border-color:var(--lime)}
+textarea{min-height:84px;resize:vertical}
+.form-grid{display:flex;flex-direction:column;gap:18px;margin-top:18px}
+.attend-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.attend-toggle button{font:700 13px 'Orbitron',sans-serif;color:#fff;background:#0b1024;border:1px solid #2c3562;border-radius:12px;padding:14px 8px;cursor:pointer}
+.attend-toggle button.active-yes{background:var(--lime);color:#080B1B;border-color:var(--lime)}
+.attend-toggle button.active-no{background:#70466D;border-color:#70466D}
+.counters{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.counter-box{background:#0b1024;border:1px solid #2c3562;border-radius:12px;padding:12px;text-align:center}
+.counter-box>span{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--metal)}
+.stepper{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px}
+.stepper button{width:36px;height:36px;border-radius:50%;border:1px solid var(--lime);background:transparent;color:var(--lime);font:700 20px 'Orbitron',sans-serif;cursor:pointer}
+.count-val{font:900 24px 'Orbitron',sans-serif;min-width:28px;text-align:center}
+.submit-btn{width:100%;margin-top:22px;background:var(--lime);color:#080B1B;border:none;border-radius:14px;padding:16px;font:900 14px 'Orbitron',sans-serif;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer}
+.submit-btn:disabled{opacity:.6}
+.form-msg{margin-top:12px;font-size:12px;min-height:16px}
+.form-msg.error{color:#ff8a9a}
+.hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.success-panel{text-align:center;padding:20px 6px}
+.success-panel .big{font-size:54px}
+.success-panel h3{margin-top:10px;font-family:'Orbitron',sans-serif;color:var(--lime)}
+.success-panel p{margin-top:8px;font-size:12px;color:var(--metal);line-height:1.6}
+footer{padding:22px;text-align:center;font-size:11px;color:#6b7390;background:#05070f}
+.confetti-piece{position:fixed;top:-12px;width:9px;height:14px;z-index:99;border-radius:2px}
+@keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:.9}}
+@media (prefers-reduced-motion:reduce){#astro{animation:none}}
+</style>
+</head>
+<body>
+
+<div id="stageWrap">
+<div id="stageBox">
+<div id="stage" aria-label="Invitación animada de cumpleaños de Elías">
+  <div id="bg" class="layer"></div>
+  <div id="jupiter" class="planet"></div>
+  <div id="mars" class="planet"></div>
+  <div id="moon" class="planet"></div>
+  <div id="astro"></div>
+  <!-- Logotipo provisional: sustituir por el archivo oficial (ver README al final del archivo) -->
+  <div id="logo" aria-label="SKYFUN"><span class="c1">S</span><span class="c2">K</span><span class="c3">Y</span><span class="c4">F</span><span class="c5">U</span><span class="c6">N</span></div>
+
+  <!-- Escena 1: cuenta regresiva (0–3 s) -->
+  <div id="intro" class="t nomove" data-in="0.1" data-out="3">TE INVITO<br>A MI FIESTA</div>
+  <div class="cd" data-in="0" data-out="1"><b>3</b></div>
+  <div class="cd" data-in="1" data-out="2"><b>2</b></div>
+  <div class="cd" data-in="2" data-out="3"><b>1</b></div>
+
+  <!-- Encabezado persistente (3–19 s) -->
+  <div id="name" class="t" data-in="3.0" data-out="999">ELIAS</div>
+  <div id="age" class="t" data-in="3.15" data-out="999">CUMPLO 6</div>
+
+  <!-- Escena 2: fecha y horario (3–9 s) -->
+  <div id="tEsperamos" class="t sub" data-in="3.6" data-out="9">TE ESPERAMOS ESTE</div>
+  <div id="dateCol" class="t lime" data-in="3.75" data-out="9">
+    <div class="dow">JUEVES</div><div class="day">22</div><div class="mon">OCTUBRE</div>
+  </div>
+  <div id="timeCol" class="t lime" data-in="3.9" data-out="9">De 5:00 pm<br>A 8:00 pm</div>
+
+  <!-- Escena 3: ubicación (9–19 s) -->
+  <div id="tUbicacion" class="t sub fade nomove" data-in="9.6" data-out="999">UBICACIÓN</div>
+  <div id="addr" class="t nomove" data-in="0" data-out="0" style="opacity:1;transform:none">
+    <div class="ln" data-in="11.0" style="top:0px">GENERAL BONIFACIO</div>
+    <div class="ln" data-in="11.25" style="top:55px">SALINAS LEAL #5000</div>
+    <div class="ln" data-in="11.5" style="top:110px">COLONIA TORRES DE</div>
+    <div class="ln" data-in="11.75" style="top:165px">LINDA VISTA</div>
+    <div class="ln" data-in="12.0" style="top:220px">GUADALUPE NL</div>
+  </div>
+</div>
+</div>
+</div>
+
+<div id="controls">
+  <button id="btnPlay" type="button">⏸ Pausa</button>
+  <button id="btnRestart" type="button">↺ Reiniciar</button>
+  <button id="btnSound" type="button" style="display:none">🔇 Música</button>
+  <a class="cta primary" href="#rsvp">Confirmar asistencia ↓</a>
+</div>
+
+<section id="rsvp">
+  <h2 class="section-title">Confirma tu asistencia</h2>
+  <p class="section-subtitle">Ayúdanos a organizar todo — cuéntanos si vienes</p>
+
+  <div class="rsvp-wrap">
+    <form id="rsvpForm">
+      <div>
+        <label class="field-label" for="name_in">Tu nombre</label>
+        <input type="text" id="name_in" name="name" placeholder="¿Cómo te llamas?" maxlength="80" required />
+      </div>
+      <div class="hp-field" aria-hidden="true">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label">¿Podrás acompañarnos?</label>
+          <div class="attend-toggle">
+            <button type="button" id="btnYes">🚀 ¡Sí, ahí estaré!</button>
+            <button type="button" id="btnNo">😢 No podré ir</button>
+          </div>
+        </div>
+        <div id="countersWrap">
+          <div class="counters">
+            <div class="counter-box"><span>Adultos</span>
+              <div class="stepper"><button type="button" data-target="adults" data-delta="-1">−</button><span class="count-val" id="adultsVal">1</span><button type="button" data-target="adults" data-delta="1">+</button></div>
+            </div>
+            <div class="counter-box"><span>Niños</span>
+              <div class="stepper"><button type="button" data-target="children" data-delta="-1">−</button><span class="count-val" id="childrenVal">0</span><button type="button" data-target="children" data-delta="1">+</button></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="comments">Comentarios (opcional)</label>
+          <textarea id="comments" name="comments" placeholder="Alergias, mensajes para Elías, etc."></textarea>
+        </div>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">Confirmar asistencia</button>
+      <div class="form-msg" id="formMsg"></div>
+    </form>
+    <div class="success-panel" id="successPanel" style="display:none;">
+      <div class="big">🪐</div>
+      <h3>¡Gracias por confirmar!</h3>
+      <p>Ya anotamos tu respuesta. ¡Nos vemos en la misión espacial de Elías!</p>
+    </div>
+  </div>
+</section>
+
+<footer>Hecho con ♥ para Elías — ¡6 años de pura aventura espacial!</footer>
+
+<script>
+(function () {
+"use strict";
+
+/* ============ CONFIGURACIÓN EDITABLE ============ */
+var INVITATION_ID = "d94c8855-a511-49c5-afdd-ad00d0faff9b";
+var RSVP_ENDPOINT = "/api/invitations/" + INVITATION_ID + "/rsvp";
+var MAX_PEOPLE = 10;
+var DURATION = 19;          // segundos totales de la animación
+var AUDIO_URL = "";         // pista opcional (ej. "musica.mp3"); vacío = sin música
+var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ============ ESCALADO 9:16 SIN DEFORMAR ============ */
+var stage = document.getElementById("stage");
+var box = document.getElementById("stageBox");
+function fit() {
+  var ctrlH = document.getElementById("controls").offsetHeight || 64;
+  var s = Math.min(window.innerWidth / 720, (window.innerHeight - ctrlH) / 1280);
+  if (s > 1.2) s = 1.2;
+  box.style.width = (720 * s) + "px";
+  box.style.height = (1280 * s) + "px";
+  stage.style.transform = "scale(" + s + ")";
+}
+window.addEventListener("resize", fit);
+fit();
+
+/* ============ LÍNEA DE TIEMPO ============ */
+var timed = Array.prototype.slice.call(stage.querySelectorAll("[data-in]"));
+var bg = document.getElementById("bg");
+var jup = document.getElementById("jupiter");
+var mars = document.getElementById("mars");
+var moon = document.getElementById("moon");
+var t = 0, playing = true, last = null;
+
+function applyTime(now) {
+  for (var i = 0; i < timed.length; i++) {
+    var el = timed[i];
+    var a = parseFloat(el.getAttribute("data-in"));
+    var bAttr = el.getAttribute("data-out");
+    var b = bAttr === null ? Infinity : parseFloat(bAttr);
+    var isCd = el.classList.contains("cd");
+    var isLn = el.classList.contains("ln");
+    var on = now >= a && (isLn ? true : now < b);
+    if (el.id === "addr") continue;
+    if (isCd) {
+      el.classList.toggle("on", on);
+      el.classList.toggle("out", now >= b);
+    } else if (b >= 999 || isLn) {
+      el.classList.toggle("on", now >= a);
+    } else {
+      // visible entre a y b; la salida es solo opacidad
+      el.classList.toggle("on", on);
+    }
+  }
+  var p = Math.min(now / DURATION, 1);
+  if (!reduceMotion) {
+    bg.style.transform = "scale(" + (1 + 0.04 * p) + ")";
+    jup.style.transform = "translate(" + (p * 26) + "px," + (p * 14) + "px)";
+    mars.style.transform = "translate(" + (-p * 18) + "px," + (p * 22) + "px)";
+    moon.style.transform = "translate(" + (-p * 24) + "px," + (-p * 12) + "px)";
+  }
+}
+
+function tick(ts) {
+  if (last === null) last = ts;
+  if (playing) {
+    t += (ts - last) / 1000;
+    if (t >= DURATION) { t = DURATION; }
+    applyTime(t);
+  }
+  last = ts;
+  requestAnimationFrame(tick);
+}
+
+var btnPlay = document.getElementById("btnPlay");
+btnPlay.addEventListener("click", function () {
+  playing = !playing;
+  btnPlay.textContent = playing ? "⏸ Pausa" : "▶ Reproducir";
+  if (audio) { playing ? audio.play().catch(function(){}) : audio.pause(); }
+});
+document.getElementById("btnRestart").addEventListener("click", function () {
+  t = 0; playing = true; btnPlay.textContent = "⏸ Pausa";
+  for (var i = 0; i < timed.length; i++) { timed[i].classList.remove("on", "out"); }
+  applyTime(0);
+  if (audio) { audio.currentTime = 0; audio.play().catch(function(){}); }
+});
+
+/* Audio opcional (no se añade música por defecto) */
+var audio = null;
+if (AUDIO_URL) {
+  audio = new Audio(AUDIO_URL); audio.loop = true;
+  var bs = document.getElementById("btnSound");
+  bs.style.display = "inline-block";
+  bs.addEventListener("click", function () {
+    if (audio.paused) { audio.play().catch(function(){}); bs.textContent = "🔊 Música"; }
+    else { audio.pause(); bs.textContent = "🔇 Música"; }
+  });
+}
+
+if (reduceMotion) { t = DURATION; }
+applyTime(t);
+requestAnimationFrame(tick);
+
+/* ============ RSVP ============ */
+var attending = "yes";
+var counts = { adults: 1, children: 0 };
+var btnYes = document.getElementById("btnYes");
+var btnNo = document.getElementById("btnNo");
+var countersWrap = document.getElementById("countersWrap");
+
+function renderAttendState() {
+  if (attending === "yes") {
+    btnYes.classList.add("active-yes"); btnNo.classList.remove("active-no"); countersWrap.style.display = "block";
+  } else {
+    btnNo.classList.add("active-no"); btnYes.classList.remove("active-yes"); countersWrap.style.display = "none";
+  }
+}
+btnYes.addEventListener("click", function () { attending = "yes"; renderAttendState(); });
+btnNo.addEventListener("click", function () { attending = "no"; renderAttendState(); });
+renderAttendState();
+
+var steppers = document.querySelectorAll(".stepper button");
+for (var i = 0; i < steppers.length; i++) {
+  steppers[i].addEventListener("click", function (ev) {
+    var btn = ev.currentTarget;
+    var target = btn.getAttribute("data-target");
+    var next = counts[target] + parseInt(btn.getAttribute("data-delta"), 10);
+    if (next < 0) next = 0;
+    if (next > MAX_PEOPLE) next = MAX_PEOPLE;
+    counts[target] = next;
+    document.getElementById(target + "Val").textContent = next;
+  });
+}
+
+function launchConfetti() {
+  var colors = ["#E5F20B", "#ffffff", "#70466D", "#B8BDC5"];
+  for (var k = 0; k < 40; k++) {
+    var piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left = (Math.random() * 100) + "vw";
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animation = "fall " + (2.5 + Math.random() * 1.5) + "s ease-in forwards";
+    piece.style.animationDelay = (Math.random() * 0.4) + "s";
+    document.body.appendChild(piece);
+    (function (p) { setTimeout(function () { p.remove(); }, 4500); })(piece);
+  }
+}
+
+var form = document.getElementById("rsvpForm");
+var submitBtn = document.getElementById("submitBtn");
+var formMsg = document.getElementById("formMsg");
+var successPanel = document.getElementById("successPanel");
+var honeypot = document.getElementById("website");
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  formMsg.textContent = ""; formMsg.className = "form-msg";
+  if (honeypot && honeypot.value) { form.style.display = "none"; successPanel.style.display = "block"; return; }
+
+  var name = document.getElementById("name_in").value.trim();
+  var comments = document.getElementById("comments").value.trim();
+  if (!name) { formMsg.textContent = "Por favor escribe tu nombre."; formMsg.className = "form-msg error"; return; }
+
+  var payload = {
+    name: name.slice(0, 80),
+    attending: attending,
+    adults: attending === "yes" ? counts.adults : 0,
+    children: attending === "yes" ? counts.children : 0,
+    comments: comments,
+    website: honeypot ? honeypot.value : ""
+  };
+  submitBtn.disabled = true; submitBtn.textContent = "Enviando...";
+
+  fetch(RSVP_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+    .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+    .then(function (r) {
+      if (!r.ok) { var err = new Error("ERR"); err.serverMessage = r.data && r.data.message; throw err; }
+      form.style.display = "none"; successPanel.style.display = "block"; launchConfetti();
+    })
+    .catch(function (err) {
+      formMsg.textContent = (err && err.serverMessage) || "No pudimos guardar tu confirmación. Intenta de nuevo en un momento.";
+      formMsg.className = "form-msg error";
+      submitBtn.disabled = false; submitBtn.textContent = "Confirmar asistencia";
+    });
+});
+})();
+</script>
+
+<!--
+README — cómo sustituir recursos provisionales
+- bg.jpg        → fondo de galaxia (720x1280 o 1080x1920). Reemplaza el archivo con el mismo nombre.
+- astronaut.png → astronauta recortado con transparencia (~720x520, pecho hacia arriba).
+- jupiter.png / mars.png / moon.png → planetas con transparencia.
+- Logotipo SKYFUN: actualmente es un rótulo provisional en texto (#logo). Para usar el oficial,
+  sube logo.png y reemplaza el <div id="logo"> por <img id="logo" src="logo.png"> con el mismo tamaño.
+- Datos (nombre, fecha, hora, dirección): son textos HTML editables en el bloque del escenario.
+- Música opcional: pon la URL del audio en AUDIO_URL (configuración al inicio del script).
+- Exportar a video: abre la página, usa "Reiniciar" y graba la pantalla (9:16, 19 s), o usa una herramienta
+  de captura (p. ej. Puppeteer + ffmpeg a 720x1280, 25 fps).
+-->
+</body>
+</html>
